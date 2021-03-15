@@ -1,0 +1,34 @@
+package payroll.model.union;
+
+import java.time.LocalDate;
+
+public class ServiceTax {
+    
+    private LocalDate date;
+    
+    private Double value;
+
+
+    public ServiceTax(LocalDate date, Double value) {
+        this.date = date;
+        this.value = value;
+    }
+
+
+    public LocalDate getDate() {
+        return this.date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public Double getValue() {
+        return this.value;
+    }
+
+    public void setValue(Double value) {
+        this.value = value;
+    }
+
+}
