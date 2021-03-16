@@ -108,7 +108,7 @@ public class Employee {
         if (getUnionMember() != null) {
             str += getUnionMember().toString();
         } else {
-            str += "Union: not a union member";
+            str += "\nUnion: not a union member";
         }
         return str;
     }
