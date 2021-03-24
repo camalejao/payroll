@@ -6,19 +6,12 @@ public class Wage {
 
     private PaymentMethod paymentMethod;
 
-    private Double value;
-
-    private Double commissionRate;
-
     private String schedule;
 
 
-    public Wage(WageType wageType, PaymentMethod paymentMethod,
-                Double value, Double commissionRate, String schedule) {
+    public Wage(WageType wageType, PaymentMethod paymentMethod, String schedule) {
         this.wageType = wageType;
         this.paymentMethod = paymentMethod;
-        this.value = value;
-        this.commissionRate = commissionRate;
         this.schedule = schedule;
     }
 
@@ -31,6 +24,7 @@ public class Wage {
         this.wageType = wageType;
     }
 
+    
     public PaymentMethod getPaymentMethod() {
         return this.paymentMethod;
     }
@@ -38,25 +32,8 @@ public class Wage {
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
-
-    public Double getValue() {
-        return this.value;
-    }
-
-    public void setValue(Double value) {
-        this.value = value;
-    }
-
-
-    public Double getCommissionRate() {
-        return this.commissionRate;
-    }
-
-    public void setCommissionRate(Double commissionRate) {
-        this.commissionRate = commissionRate;
-    }
-
     
+
     public String getSchedule() {
         return this.schedule;
     }
@@ -69,8 +46,6 @@ public class Wage {
     @Override
     public String toString() {
         String str = "\nWage type: " + getWageType().getWageDescription();
-        str += "\nWage value: " + getValue();
-        str += "\nCommission Rate: " + getCommissionRate();
         return str;
     }
 

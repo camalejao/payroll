@@ -1,7 +1,5 @@
 package payroll.model.employee;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import payroll.model.payments.Wage;
@@ -19,10 +17,10 @@ public class Employee {
 
     private UnionMember unionMember;
 
-    private List<SaleReport> saleReports;
+    
+    public Employee() {
 
-    private List<Timecard> timecards;
-
+    }
 
     public Employee(UUID id, String name, String address,
                     Wage wage, UnionMember unionMember) {
@@ -31,8 +29,6 @@ public class Employee {
         this.address = address;
         this.wage = wage;
         this.unionMember = unionMember;
-        this.saleReports = new ArrayList<SaleReport>();
-        this.timecards = new ArrayList<Timecard>();
     }
     
 
@@ -78,24 +74,6 @@ public class Employee {
 
     public void setUnionMember(UnionMember unionMember) {
         this.unionMember = unionMember;
-    }
-
-
-    public List<SaleReport> getSaleReports() {
-        return this.saleReports;
-    }
-
-    public void setSaleReports(List<SaleReport> saleReports) {
-        this.saleReports = saleReports;
-    }
-
-
-    public List<Timecard> getTimecards() {
-        return this.timecards;
-    }
-
-    public void setTimecards(List<Timecard> timecards) {
-        this.timecards = timecards;
     }
 
 

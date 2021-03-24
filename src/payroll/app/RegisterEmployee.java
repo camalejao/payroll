@@ -14,8 +14,10 @@ import payroll.model.union.UnionMember;
 
 public class RegisterEmployee {
     public static void main(String[] args) {
+        // TODO: use employee subclasses
+
         String name, address, answerYorN = "Y";
-        Double wageValue, commissionRate = 0.0, unionFee;
+        Double unionFee;
         PaymentMethod paymentMethod;
         WageType wageType;
         int answer, i = 1;
@@ -60,18 +62,18 @@ public class RegisterEmployee {
             schedule = paymentSchedules.getOptions().get(answer - 1);
             System.out.println();
     
-            if (wageType == WageType.COMMISSIONED) {
-                System.out.println("Enter commission rate:");
-                commissionRate = input.nextDouble();
-                System.out.println();
-            }
+            // if (wageType == WageType.COMMISSIONED) {
+            //     System.out.println("Enter commission rate:");
+            //     commissionRate = input.nextDouble();
+            //     System.out.println();
+            // }
     
-            System.out.println("Enter wage value (per hour or fixed monthly amount):");
-            wageValue = input.nextDouble();
-            input.nextLine(); // to read the 'Enter'
-            System.out.println();
+            // System.out.println("Enter wage value (per hour or fixed monthly amount):");
+            // wageValue = input.nextDouble();
+            // input.nextLine(); // to read the 'Enter'
+            // System.out.println();
     
-            wage = new Wage(wageType, paymentMethod, wageValue, commissionRate, schedule);
+            wage = new Wage(wageType, paymentMethod, schedule);
     
             System.out.println("Is the employee a union member? (Y/N)");
             answerYorN = input.nextLine();
@@ -96,7 +98,6 @@ public class RegisterEmployee {
             answerYorN = input.nextLine();
             
             // reset optional variables
-            commissionRate = 0.0;
             unionMember = null;
         }
         
