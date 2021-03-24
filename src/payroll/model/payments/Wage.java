@@ -10,13 +10,16 @@ public class Wage {
 
     private Double commissionRate;
 
+    private String schedule;
+
 
     public Wage(WageType wageType, PaymentMethod paymentMethod,
-                Double value, Double commissionRate) {
+                Double value, Double commissionRate, String schedule) {
         this.wageType = wageType;
         this.paymentMethod = paymentMethod;
         this.value = value;
         this.commissionRate = commissionRate;
+        this.schedule = schedule;
     }
 
 
@@ -51,6 +54,15 @@ public class Wage {
 
     public void setCommissionRate(Double commissionRate) {
         this.commissionRate = commissionRate;
+    }
+
+    
+    public String getSchedule() {
+        return this.schedule;
+    }
+
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
     }
 
 

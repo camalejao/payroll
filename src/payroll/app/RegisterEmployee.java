@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import payroll.model.employee.Employee;
 import payroll.model.payments.PaymentMethod;
+import payroll.model.payments.PaymentSchedule;
 import payroll.model.payments.Wage;
 import payroll.model.payments.WageType;
 import payroll.model.union.UnionMember;
@@ -22,6 +23,8 @@ public class RegisterEmployee {
         Employee employee;
         Wage wage;
         UnionMember unionMember = null;
+        PaymentSchedule paymentSchedules = new PaymentSchedule();
+        String schedule = "";
         List<Employee> employeeList = new ArrayList<Employee>();
     
         Scanner input = new Scanner(System.in);
@@ -54,6 +57,7 @@ public class RegisterEmployee {
             i = 1;
             answer = input.nextInt();
             wageType = WageType.values()[answer - 1];
+            schedule = paymentSchedules.getOptions().get(answer - 1);
             System.out.println();
     
             if (wageType == WageType.COMMISSIONED) {
@@ -67,7 +71,7 @@ public class RegisterEmployee {
             input.nextLine(); // to read the 'Enter'
             System.out.println();
     
-            wage = new Wage(wageType, paymentMethod, wageValue, commissionRate);
+            wage = new Wage(wageType, paymentMethod, wageValue, commissionRate, schedule);
     
             System.out.println("Is the employee a union member? (Y/N)");
             answerYorN = input.nextLine();
