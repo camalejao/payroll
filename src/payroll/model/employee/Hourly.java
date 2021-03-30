@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import payroll.model.payments.Wage;
+import payroll.model.payments.PaymentInfo;
 import payroll.model.union.UnionMember;
 
 public class Hourly extends Employee {
@@ -23,9 +23,9 @@ public class Hourly extends Employee {
         this.timecards = new ArrayList<Timecard>();
     }
 
-    public Hourly(UUID id, String name, String address,
-                    Wage wage, UnionMember unionMember, Double hourlyRate) {
-        super(id, name, address, wage, unionMember);
+    public Hourly(UUID id, String name, String address, UnionMember unionMember,
+                    PaymentInfo paymentInfo, Double hourlyRate) {
+        super(id, name, address, unionMember, paymentInfo);
         this.hourlyRate = hourlyRate;
         this.timecards = new ArrayList<Timecard>();
     }
@@ -48,4 +48,12 @@ public class Hourly extends Employee {
         this.timecards = timecards;
     }
 
+
+    @Override
+    public String toString() {
+        return super.toString() + "\nHourly: {" +
+            " hourlyRate='" + getHourlyRate() + "'" +
+            ", timecards='" + getTimecards() + "'" +
+            "}";
+    }
 }

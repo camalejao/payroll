@@ -5,25 +5,25 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
+import payroll.model.employee.Commissioned;
 import payroll.model.employee.Employee;
+import payroll.model.employee.Hourly;
+import payroll.model.employee.Salaried;
+import payroll.model.payments.PaymentInfo;
 import payroll.model.payments.PaymentMethod;
 import payroll.model.payments.PaymentSchedule;
-import payroll.model.payments.Wage;
-import payroll.model.payments.WageType;
 import payroll.model.union.UnionMember;
 
 public class RegisterEmployee {
     public static void main(String[] args) {
-        // TODO: use employee subclasses
-
         String name, address, answerYorN = "Y";
-        Double unionFee;
+        int bank, agency, account;
+        Double unionFee, salary, commissionRate, hourlyRate;
+        PaymentInfo paymentInfo = null;
         PaymentMethod paymentMethod;
-        WageType wageType;
         int answer, i = 1;
 
         Employee employee;
-        Wage wage;
         UnionMember unionMember = null;
         PaymentSchedule paymentSchedules = new PaymentSchedule();
         String schedule = "";
@@ -40,6 +40,37 @@ public class RegisterEmployee {
             System.out.println("Enter the address:");
             address = input.nextLine();
             System.out.println();
+
+            System.out.println("What is the type of employee? (enter 1, 2 or 3)");
+            System.out.printf("[1] Hourly\n[2] Salaried\n[3] Commissioned\n");
+            answer = input.nextInt();
+            System.out.println();
+
+            if (answer == 1) {
+                System.out.println("Enter the hourly rate/wage:");
+                hourlyRate = input.nextDouble();
+                input.nextLine(); // to read the 'Enter'
+                System.out.println();
+                employee = new Hourly(UUID.randomUUID(), name, address, unionMember, paymentInfo, hourlyRate);
+            } else if (answer == 2) {
+                System.out.println("Enter the salary:");
+                salary = input.nextDouble();
+                input.nextLine(); // to read the 'Enter'
+                System.out.println();
+                employee = new Salaried(UUID.randomUUID(), name, address, unionMember, paymentInfo, salary);
+            } else if (answer == 3) {
+                input.nextLine();
+                System.out.println("Enter the salary:");
+                salary = input.nextDouble();
+                System.out.println();
+                System.out.println("Enter the commission rate:");
+                commissionRate = input.nextDouble();
+                input.nextLine(); // to read the 'Enter'
+                System.out.println();
+                employee = new Commissioned(UUID.randomUUID(), name, address, unionMember, paymentInfo, salary, commissionRate);
+            } else {
+                employee = new Employee(UUID.randomUUID(), name, address, unionMember, paymentInfo);
+            }
     
             System.out.println("Select payment method (enter 1, 2 or 3):");
             for (PaymentMethod pm : PaymentMethod.values()) {
@@ -50,34 +81,27 @@ public class RegisterEmployee {
             answer = input.nextInt();
             paymentMethod = PaymentMethod.values()[answer - 1];
             System.out.println();
-            
-            System.out.println("Select wage type (enter 1, 2 or 3):");
-            for (WageType wt : WageType.values()) {
-                System.out.println("[" + i + "]. " + wt.getWageDescription());
-                i++;
-            }
-            i = 1;
-            answer = input.nextInt();
-            wageType = WageType.values()[answer - 1];
+
             schedule = paymentSchedules.getOptions().get(answer - 1);
+
+            System.out.println("Enter the bank number:");
+            bank = input.nextInt();
             System.out.println();
-    
-            // if (wageType == WageType.COMMISSIONED) {
-            //     System.out.println("Enter commission rate:");
-            //     commissionRate = input.nextDouble();
-            //     System.out.println();
-            // }
-    
-            // System.out.println("Enter wage value (per hour or fixed monthly amount):");
-            // wageValue = input.nextDouble();
-            // input.nextLine(); // to read the 'Enter'
-            // System.out.println();
-    
-            wage = new Wage(wageType, paymentMethod, schedule);
-    
+
+            System.out.println("Enter the agency number:");
+            agency = input.nextInt();
+            System.out.println();
+
+            System.out.println("Enter the account number:");
+            account = input.nextInt();
+            System.out.println();
+
+            paymentInfo = new PaymentInfo(bank, agency, account, schedule, paymentMethod);
+            employee.setPaymentInfo(paymentInfo);
+
+            input.nextLine();
             System.out.println("Is the employee a union member? (Y/N)");
             answerYorN = input.nextLine();
-            System.out.println("You answered: " + answerYorN);
             System.out.println();
             
             if (answerYorN.equalsIgnoreCase("Y")) {
@@ -86,9 +110,9 @@ public class RegisterEmployee {
                 input.nextLine(); // to read the 'Enter'
                 System.out.println();
                 unionMember = new UnionMember(UUID.randomUUID(), true, unionFee);
+                employee.setUnionMember(unionMember);
             }
             
-            employee = new Employee(UUID.randomUUID(), name, address, wage, unionMember);
             employeeList.add(employee);
             
             System.out.println("\nNew employee registered!");
@@ -97,8 +121,9 @@ public class RegisterEmployee {
             System.out.println("\n\nContinue registering new employees? (Y/N)");
             answerYorN = input.nextLine();
             
-            // reset optional variables
+            // reset variables
             unionMember = null;
+            paymentInfo = null;
         }
         
         i = 1;

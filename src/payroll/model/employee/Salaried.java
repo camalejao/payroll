@@ -2,7 +2,7 @@ package payroll.model.employee;
 
 import java.util.UUID;
 
-import payroll.model.payments.Wage;
+import payroll.model.payments.PaymentInfo;
 import payroll.model.union.UnionMember;
 
 public class Salaried extends Employee {
@@ -18,9 +18,9 @@ public class Salaried extends Employee {
         this.salary = salary;
     }
 
-    public Salaried(UUID id, String name, String address, Wage wage,
-                    UnionMember unionMember, Double salary) {
-        super(id, name, address, wage, unionMember);
+    public Salaried(UUID id, String name, String address, UnionMember unionMember,
+                    PaymentInfo paymentInfo, Double salary) {
+        super(id, name, address, unionMember, paymentInfo);
         this.salary = salary;
     }
 
@@ -32,4 +32,13 @@ public class Salaried extends Employee {
     public void setSalary(Double salary) {
         this.salary = salary;
     }
+
+
+    @Override
+    public String toString() {
+        return super.toString() + "\nSalaried: {" +
+            " salary='" + getSalary() + "'" +
+            "}";
+    }
+
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import payroll.model.payments.Wage;
+import payroll.model.payments.PaymentInfo;
 import payroll.model.union.UnionMember;
 
 public class Commissioned extends Employee {
@@ -26,9 +26,10 @@ public class Commissioned extends Employee {
         this.saleReports = new ArrayList<SaleReport>();
     }
 
-    public Commissioned(UUID id, String name, String address, Wage wage,
-        UnionMember unionMember, Double fixedsalary, Double commissionRate) {
-        super(id, name, address, wage, unionMember);
+    public Commissioned(UUID id, String name, String address, UnionMember unionMember,
+                        PaymentInfo paymentInfo, Double fixedSalary, Double commissionRate) {
+        super(id, name, address, unionMember, paymentInfo);
+        this.fixedSalary = fixedSalary;
         this.commissionRate = commissionRate;
         this.saleReports = new ArrayList<SaleReport>();
     }
@@ -60,4 +61,14 @@ public class Commissioned extends Employee {
         this.saleReports = saleReports;
     }
 
+
+
+    @Override
+    public String toString() {
+        return super.toString() + "\nCommissioned: {" +
+            " fixedSalary='" + getFixedSalary() + "'" +
+            ", commissionRate='" + getCommissionRate() + "'" +
+            ", saleReports='" + getSaleReports() + "'" +
+            "}";
+    }
 }

@@ -2,7 +2,7 @@ package payroll.model.employee;
 
 import java.util.UUID;
 
-import payroll.model.payments.Wage;
+import payroll.model.payments.PaymentInfo;
 import payroll.model.union.UnionMember;
 
 public class Employee {
@@ -13,9 +13,9 @@ public class Employee {
 
     private String address;
 
-    private Wage wage;
-
     private UnionMember unionMember;
+
+    private PaymentInfo paymentInfo;
 
     
     public Employee() {
@@ -23,12 +23,12 @@ public class Employee {
     }
 
     public Employee(UUID id, String name, String address,
-                    Wage wage, UnionMember unionMember) {
+                    UnionMember unionMember, PaymentInfo paymentInfo) {
         this.id = id;
         this.name = name;
         this.address = address;
-        this.wage = wage;
         this.unionMember = unionMember;
+        this.paymentInfo = paymentInfo;
     }
     
 
@@ -58,15 +58,6 @@ public class Employee {
         this.address = address;
     }
 
-
-    public Wage getWage() {
-        return this.wage;
-    }
-
-    public void setWage(Wage wage) {
-        this.wage = wage;
-    }
-
     
     public UnionMember getUnionMember() {
         return this.unionMember;
@@ -77,12 +68,21 @@ public class Employee {
     }
 
 
+    public PaymentInfo getPaymentInfo() {
+        return this.paymentInfo;
+    }
+
+    public void setPaymentInfo(PaymentInfo paymentInfo) {
+        this.paymentInfo = paymentInfo;
+    }
+
+
     @Override
     public String toString() {
         String str = "Employee ID: " + getId();
         str += "\nName: " + getName();
         str += "\nAddress: " + getAddress();
-        str += getWage().toString();
+        str += "\nPayment Info: " + getPaymentInfo().toString();
         if (getUnionMember() != null) {
             str += getUnionMember().toString();
         } else {
