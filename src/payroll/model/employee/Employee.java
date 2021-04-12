@@ -91,4 +91,7 @@ public class Employee {
         return str;
     }
 
+    public String printBasicInfo() {
+        return this.getName() + " id:" + this.getId();
+    }
 }

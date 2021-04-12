@@ -1,5 +1,6 @@
 package payroll.app;
 
+import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -12,8 +13,9 @@ import payroll.model.payments.PaymentMethod;
 import payroll.model.payments.PaymentSchedule;
 import payroll.model.union.UnionMember;
 
-public class RegisterEmployee {
-    public static Employee registration(Scanner input, PaymentSchedule paymentSchedules) {
+public class EmployeeMenu {
+    
+    public static Employee registerEmployee(Scanner input, PaymentSchedule paymentSchedules) {
         
         Employee employee;
         PaymentInfo paymentInfo = null;
@@ -119,4 +121,29 @@ public class RegisterEmployee {
 
         return employee;
     }
+
+    public static void printEmployees(List<Employee> employeeList) {
+        int i = 1;
+        System.out.println("\n\nEmployee List:");
+        for (Employee e : employeeList) {
+            System.out.println("\nEmployee #" + i);
+            System.out.println(e.toString());
+            System.out.println("\n=======================================================");
+            i++;
+        }
+    }
+
+    public static int removeEmployee(Scanner input, List<Employee> employeeList) {
+        int i = 1, index = 0, empListSize = employeeList.size();
+        System.out.println("\nChoose Employee to remove [1-" + empListSize + "]:");
+        for (Employee e : employeeList) {
+            System.out.println("#" + i + " " + e.printBasicInfo());
+            i++;
+        }
+        while(index <= 0 || index > empListSize) {
+            index = input.nextInt();
+        }
+        return index - 1;
+    }
+
 }

@@ -20,6 +20,7 @@ public class PayrollApp {
             System.out.println("Payroll App Menu");
             System.out.println("[1] Register Employee");
             System.out.println("[2] List Employees");
+            System.out.println("[3] Remove Employee");
             System.out.println("[0] Exit");
 
             option = input.nextInt();
@@ -27,15 +28,29 @@ public class PayrollApp {
 
             switch (option) {
                 case 1:
-                    employeeList.add(RegisterEmployee.registration(input, paymentSchedules));
+                    employeeList.add(EmployeeMenu.registerEmployee(input, paymentSchedules));
                     ConsoleUtils.pressEnterToContinue(input);
                     break;
                 
                 case 2:
-                    printEmployees(employeeList);
-                    ConsoleUtils.pressEnterToContinue(input);
+                    if (!employeeList.isEmpty()) {
+                        EmployeeMenu.printEmployees(employeeList);
+                        ConsoleUtils.pressEnterToContinue(input);
+                    } else {
+                        System.out.println("No employees registered to be listed");
+                    }
                     break;
-                
+                    
+                case 3:
+                    if (!employeeList.isEmpty()) {
+                        employeeList.remove(EmployeeMenu.removeEmployee(input, employeeList));
+                        System.out.println("Employee Removed");
+                        ConsoleUtils.pressEnterToContinue(input);
+                    } else {
+                        System.out.println("No employees registered to be removed");
+                    }
+                    break;
+                    
                 default:
                     break;
             }
@@ -45,14 +60,5 @@ public class PayrollApp {
         System.out.println("Bye!");
     }
 
-    public static void printEmployees(List<Employee> employeeList) {
-        int i = 1;
-        System.out.println("\n\nEmployee List:");
-        for (Employee e : employeeList) {
-            System.out.println("\nEmployee #" + i);
-            System.out.println(e.toString());
-            System.out.println("\n=======================================================");
-            i++;
-        }
-    }
+    
 }
