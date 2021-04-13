@@ -18,6 +18,7 @@ import payroll.model.employee.Timecard;
 import payroll.model.payments.PaymentInfo;
 import payroll.model.payments.PaymentMethod;
 import payroll.model.payments.PaymentSchedule;
+import payroll.model.union.ServiceTax;
 import payroll.model.union.UnionMember;
 
 public class EmployeeMenu {
@@ -170,7 +171,7 @@ public class EmployeeMenu {
 
             Timecard timecard = new Timecard(date, timeIn, timeOut);
             emp.getTimecards().add(timecard);
-
+            System.out.println("Timecard added");
         } else {
             System.out.println("There are no hourly employees to add timecard");
         }
@@ -192,14 +193,29 @@ public class EmployeeMenu {
 
             SaleReport saleReport = new SaleReport(date, value);
             emp.getSaleReports().add(saleReport);
-
+            System.out.println("Sale Report added");
         } else {
             System.out.println("There are no commisioned employees to add sale report");
         }
     }
 
     public static void addServiceTax(Scanner input, List<Employee> employeeList) {
+        Predicate<Employee> unionFilter = employee -> employee.getUnionMember() != null && employee.getUnionMember().isActive();
+        List<Employee> unionEmployees = employeeList.stream().filter(unionFilter).collect(Collectors.toList());
         
+        if (!unionEmployees.isEmpty()) {
+            Employee emp = unionEmployees.get(getEmployeeIndex(input, unionEmployees));
+
+            LocalDate date = ConsoleUtils.getDateInput(input);
+            System.out.println("Enter tax value:");
+            double value = input.nextDouble();
+
+            ServiceTax serviceTax = new ServiceTax(date, value);
+            emp.getUnionMember().getServiceTaxes().add(serviceTax);
+            System.out.println("Service Tax added");
+        } else {
+            System.out.println("There are no Union members to add service tax");
+        }
     }
 
     private static int getEmployeeIndex(Scanner input, List<Employee> employeeList) {

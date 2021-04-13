@@ -21,6 +21,9 @@ public class PayrollApp {
             System.out.println("[1] Register Employee");
             System.out.println("[2] List Employees");
             System.out.println("[3] Remove Employee");
+            System.out.println("[4] Add Timecard");
+            System.out.println("[5] Add Sale Report");
+            System.out.println("[6] Add Service Tax");
             System.out.println("[0] Exit");
 
             option = input.nextInt();
@@ -49,7 +52,34 @@ public class PayrollApp {
                         System.out.println("No employees registered to be removed");
                     }
                     break;
-                    
+                
+                case 4:
+                    if (!employeeList.isEmpty()) {
+                        EmployeeMenu.addTimecard(input, employeeList);
+                        ConsoleUtils.pressEnterToContinue(input);
+                    } else {
+                        System.out.println("No employees registered to add it");
+                    }
+                    break;
+                
+                case 5:
+                    if (!employeeList.isEmpty()) {
+                        EmployeeMenu.addSaleReport(input, employeeList);
+                        ConsoleUtils.pressEnterToContinue(input);
+                    } else {
+                        System.out.println("No employees registered to add it");
+                    }
+                    break;
+                
+                case 6:
+                    if (!employeeList.isEmpty()) {
+                        EmployeeMenu.addServiceTax(input, employeeList);
+                        ConsoleUtils.pressEnterToContinue(input);
+                    } else {
+                        System.out.println("No employees registered to add it");
+                    }
+                    break;
+                
                 default:
                     break;
             }

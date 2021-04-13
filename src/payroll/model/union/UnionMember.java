@@ -68,6 +68,7 @@ public class UnionMember {
         String str = "\nUnion ID: " + getId();
         str += "\nIs an Active Union Member: " + getActive();
         str += "\nUnion Fee: " + getFee();
+        str += "\nServiceTaxes='" + getServiceTaxes() + "'";
         return str;
     }
 }
