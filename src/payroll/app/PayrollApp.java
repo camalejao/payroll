@@ -43,8 +43,7 @@ public class PayrollApp {
                     
                 case 3:
                     if (!employeeList.isEmpty()) {
-                        employeeList.remove(EmployeeMenu.removeEmployee(input, employeeList));
-                        System.out.println("Employee Removed");
+                        EmployeeMenu.removeEmployee(input, employeeList);
                         ConsoleUtils.pressEnterToContinue(input);
                     } else {
                         System.out.println("No employees registered to be removed");

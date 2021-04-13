@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import payroll.app.util.ConsoleUtils;
 import payroll.model.employee.Commissioned;
 import payroll.model.employee.Employee;
 import payroll.model.employee.Hourly;
@@ -139,17 +140,9 @@ public class EmployeeMenu {
         }
     }
 
-    public static int removeEmployee(Scanner input, List<Employee> employeeList) {
-        int i = 1, index = 0, empListSize = employeeList.size();
-        System.out.println("\nChoose Employee to remove [1-" + empListSize + "]:");
-        for (Employee e : employeeList) {
-            System.out.println("#" + i + " " + e.printBasicInfo());
-            i++;
-        }
-        while (index <= 0 || index > empListSize) {
-            index = input.nextInt();
-        }
-        return index - 1;
+    public static void removeEmployee(Scanner input, List<Employee> employeeList) {
+        employeeList.remove(getEmployeeIndex(input, employeeList));
+        System.out.println("Employee Removed");
     }
 
     public static void addTimecard(Scanner input, List<Employee> employeeList) {
@@ -157,24 +150,11 @@ public class EmployeeMenu {
         List<Employee> hourlyEmployees = employeeList.stream().filter(hourlyFilter).collect(Collectors.toList());
         
         if (!hourlyEmployees.isEmpty()) {
-            int i = 1, index = 0, size = hourlyEmployees.size();
-            for (Employee e : hourlyEmployees) {
-                System.out.println("#" + i + " " + e.printBasicInfo());
-                i++;
-            }
-            while (index <= 0 || index > size) {
-                index = input.nextInt();
-            }
+            int index = getEmployeeIndex(input, hourlyEmployees);
             
-            Employee emp = hourlyEmployees.get(index - 1);
+            Hourly emp = (Hourly) hourlyEmployees.get(index);
             
-            System.out.println("Enter day number:");
-            int day = input.nextInt();
-            System.out.println("Enter month number:");
-            int month = input.nextInt();
-            System.out.println("Enter year number:");
-            int year = input.nextInt();
-            LocalDate date = LocalDate.of(year, month, day);
+            LocalDate date = ConsoleUtils.getDateInput(input);
 
             System.out.println("Enter hour IN:");
             int hourIn = input.nextInt();
@@ -189,7 +169,7 @@ public class EmployeeMenu {
             LocalTime timeOut = LocalTime.of(hourOut, minuteOut);
 
             Timecard timecard = new Timecard(date, timeIn, timeOut);
-            ((Hourly) emp).getTimecards().add(timecard);
+            emp.getTimecards().add(timecard);
 
         } else {
             System.out.println("There are no hourly employees to add timecard");
@@ -201,37 +181,37 @@ public class EmployeeMenu {
         List<Employee> commissionedEmployees = employeeList.stream().filter(commissionedFilter).collect(Collectors.toList());
         
         if (!commissionedEmployees.isEmpty()) {
-            int i = 1, index = 0, size = commissionedEmployees.size();
-            for (Employee e : commissionedEmployees) {
-                System.out.println("#" + i + " " + e.printBasicInfo());
-                i++;
-            }
-            while (index <= 0 || index > size) {
-                index = input.nextInt();
-            }
+            int index = getEmployeeIndex(input, commissionedEmployees);
             
-            Employee emp = commissionedEmployees.get(index - 1);
+            Commissioned emp = (Commissioned) commissionedEmployees.get(index);
             
-            System.out.println("Enter day number:");
-            int day = input.nextInt();
-            System.out.println("Enter month number:");
-            int month = input.nextInt();
-            System.out.println("Enter year number:");
-            int year = input.nextInt();
-            LocalDate date = LocalDate.of(year, month, day);
+            LocalDate date = ConsoleUtils.getDateInput(input);
 
             System.out.println("Enter sale value:");
             double value = input.nextDouble();
 
             SaleReport saleReport = new SaleReport(date, value);
-            ((Commissioned) emp).getSaleReports().add(saleReport);
+            emp.getSaleReports().add(saleReport);
 
         } else {
             System.out.println("There are no commisioned employees to add sale report");
         }
     }
 
-    public static void addServiceTax() {
+    public static void addServiceTax(Scanner input, List<Employee> employeeList) {
         
+    }
+
+    private static int getEmployeeIndex(Scanner input, List<Employee> employeeList) {
+        int i = 1, index = 0, empListSize = employeeList.size();
+        System.out.println("\nChoose Employee [1-" + empListSize + "]:");
+        for (Employee e : employeeList) {
+            System.out.println("#" + i + " " + e.printBasicInfo());
+            i++;
+        }
+        while (index <= 0 || index > empListSize) {
+            index = input.nextInt();
+        }
+        return index - 1;
     }
 }
