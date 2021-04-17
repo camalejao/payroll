@@ -24,6 +24,7 @@ public class PayrollApp {
             System.out.println("[4] Add Timecard");
             System.out.println("[5] Add Sale Report");
             System.out.println("[6] Add Service Tax");
+            System.out.println("[7] Edit Employee");
             System.out.println("[0] Exit");
 
             option = input.nextInt();
@@ -38,48 +39,55 @@ public class PayrollApp {
                 case 2:
                     if (!employeeList.isEmpty()) {
                         EmployeeMenu.printEmployees(employeeList);
-                        ConsoleUtils.pressEnterToContinue(input);
                     } else {
                         System.out.println("No employees registered to be listed");
                     }
+                    ConsoleUtils.pressEnterToContinue(input);
                     break;
                     
                 case 3:
                     if (!employeeList.isEmpty()) {
                         EmployeeMenu.removeEmployee(input, employeeList);
-                        ConsoleUtils.pressEnterToContinue(input);
                     } else {
                         System.out.println("No employees registered to be removed");
                     }
+                    ConsoleUtils.pressEnterToContinue(input);
                     break;
                 
                 case 4:
                     if (!employeeList.isEmpty()) {
                         EmployeeMenu.addTimecard(input, employeeList);
-                        ConsoleUtils.pressEnterToContinue(input);
                     } else {
                         System.out.println("No employees registered to add it");
                     }
+                    ConsoleUtils.pressEnterToContinue(input);
                     break;
                 
                 case 5:
                     if (!employeeList.isEmpty()) {
                         EmployeeMenu.addSaleReport(input, employeeList);
-                        ConsoleUtils.pressEnterToContinue(input);
                     } else {
                         System.out.println("No employees registered to add it");
                     }
+                    ConsoleUtils.pressEnterToContinue(input);
                     break;
                 
                 case 6:
                     if (!employeeList.isEmpty()) {
                         EmployeeMenu.addServiceTax(input, employeeList);
-                        ConsoleUtils.pressEnterToContinue(input);
                     } else {
                         System.out.println("No employees registered to add it");
                     }
+                    ConsoleUtils.pressEnterToContinue(input);
                     break;
                 
+                case 7:
+                    if (!employeeList.isEmpty()) {
+                        EmployeeMenu.editEmployee(input, employeeList);
+                    } else {
+                        System.out.println("No employees registered to edit");
+                    }
+                    ConsoleUtils.pressEnterToContinue(input);
                 default:
                     break;
             }

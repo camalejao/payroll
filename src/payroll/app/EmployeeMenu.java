@@ -45,6 +45,7 @@ public class EmployeeMenu {
         System.out.printf("[1] Hourly\n[2] Salaried\n[3] Commissioned\n");
         answer = input.nextInt();
         System.out.println();
+        schedule = paymentSchedules.getOptions().get(answer - 1);
 
         if (answer == 1) {
 
@@ -92,7 +93,6 @@ public class EmployeeMenu {
         i = 1;
         answer = input.nextInt();
         paymentMethod = PaymentMethod.values()[answer - 1];
-        schedule = paymentSchedules.getOptions().get(answer - 1);
         System.out.println();
 
         System.out.println("Enter the bank number:");
@@ -215,6 +215,127 @@ public class EmployeeMenu {
             System.out.println("Service Tax added");
         } else {
             System.out.println("There are no Union members to add service tax");
+        }
+    }
+
+    public static void editEmployee(Scanner input, List<Employee> employeeList) {
+        int idx = getEmployeeIndex(input, employeeList);
+        Employee emp = employeeList.get(idx);
+
+        System.out.println("Select Attribute to edit");
+        System.out.println("[1] Name");
+        System.out.println("[2] Address");
+        System.out.println("[3] Type");
+        System.out.println("[4] Payment Method");
+        System.out.println("[5] Union Member Status");
+        System.out.println("[6] Union Monthly Tax");
+        System.out.println("[0] Cancel");
+
+        int option = input.nextInt();
+        input.nextLine(); // enter
+        switch (option) {
+            case 1:
+                System.out.println("Enter updated name:");
+                String name = input.nextLine();
+                emp.setName(name);
+                break;
+            case 2:
+                System.out.println("Enter updated address:");
+                String address = input.nextLine();
+                emp.setAddress(address);
+                break;
+            case 3:
+                System.out.println("What is the type of employee? (enter 1, 2 or 3)");
+                System.out.printf("[1] Hourly\n[2] Salaried\n[3] Commissioned\n");
+                int type = input.nextInt();
+                System.out.println();
+                if (type == 1 && !(emp instanceof Hourly)) {
+                    System.out.println("Enter the hourly rate/wage:");
+                    Double hourlyRate = input.nextDouble();
+                    input.nextLine();
+                    System.out.println();
+                    emp = new Hourly(emp.getId(), emp.getName(), emp.getAddress(),
+                        emp.getUnionMember(), emp.getPaymentInfo(), hourlyRate);
+                
+                } else if (type == 2 && !(emp instanceof Salaried)) {
+                    System.out.println("Enter the salary:");
+                    Double salary = input.nextDouble();
+                    input.nextLine();
+                    System.out.println();
+                    emp = new Salaried(emp.getId(), emp.getName(), emp.getAddress(),
+                        emp.getUnionMember(), emp.getPaymentInfo(), salary);
+                
+                } else if (type == 3 && !(emp instanceof Commissioned)) {
+                    System.out.println("Enter the salary:");
+                    Double salary = input.nextDouble();
+                    input.nextLine();
+                    System.out.println();
+                    System.out.println("Enter the commission rate:");
+                    Double commissionRate = input.nextDouble();
+                    input.nextLine();
+                    System.out.println();
+                    emp = new Commissioned(emp.getId(), emp.getName(), emp.getAddress(),
+                        emp.getUnionMember(), emp.getPaymentInfo(), salary, commissionRate);
+
+                } else {
+                    System.out.println("Invalid Option or Employee already is the selected type.");
+                }
+                break;
+            case 4:
+                int i = 1;
+                System.out.println("Select payment method (enter 1, 2 or 3):");
+                for (PaymentMethod pm : PaymentMethod.values()) {
+                    System.out.println("[" + i + "]. " + pm.getMethodDescription());
+                    i++;
+                }
+                int answer = input.nextInt();
+                if (answer >= 1 && answer <= 3) {
+                    emp.getPaymentInfo().setPaymentMethod(PaymentMethod.values()[answer - 1]);
+                    System.out.println("Done!");
+                    System.out.println(emp.toString());
+                } else {
+                    System.out.println("Invalid option");
+                }
+                break;
+            case 5:
+                if (emp.getUnionMember() == null) {
+                    System.out.println("Employee is not a union member");
+                    System.out.println("Proceed to registration? (Y/N)");
+                    String confirm = input.nextLine();
+                    if (confirm.equals("Y")) {
+                        System.out.println("Enter the monthly union fee:");
+                        Double unionFee = input.nextDouble();
+                        input.nextLine();
+                        emp.setUnionMember(new UnionMember(UUID.randomUUID(), true, unionFee));
+                    }
+                } else if (emp.getUnionMember().isActive()) {
+                    System.out.println("Employee is an active union member");
+                    System.out.println("Inactivate membership? (Y/N)");
+                    String confirm = input.nextLine();
+                    if (confirm.equals("Y")) {
+                        emp.getUnionMember().setActive(false);
+                    }
+                } else {
+                    System.out.println("Employee is an inactive union member");
+                    System.out.println("Reactivate membership? (Y/N)");
+                    String confirm = input.nextLine();
+                    if (confirm.equals("Y")) {
+                        emp.getUnionMember().setActive(true);
+                    }
+                }
+                break;
+            case 6:
+                if (emp.getUnionMember() == null) {
+                    System.out.println("Employee is not a union member");
+                } else {
+                    System.out.println("Enter the monthly union fee:");
+                    Double unionFee = input.nextDouble();
+                    input.nextLine();
+                    emp.getUnionMember().setFee(unionFee);
+                }
+                break;
+            default:
+                break;
         }
     }
 
