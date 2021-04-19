@@ -28,18 +28,12 @@ public class EmployeeMenu {
         Employee employee;
         PaymentInfo paymentInfo = null;
         UnionMember unionMember = null;
-        PaymentMethod paymentMethod;
 
-        int answer, i = 1;
-        String schedule = "", answerYorN;
+        int answer;
+        String schedule = "";
 
-        System.out.println("\nEnter the employee's name:");
-        String name = input.nextLine();
-        System.out.println();
-
-        System.out.println("Enter the address:");
-        String address = input.nextLine();
-        System.out.println();
+        String name = ConsoleUtils.readStringInput(input, "\nEnter the employee's name:");
+        String address = ConsoleUtils.readStringInput(input, "Enter the address:");
 
         System.out.println("What is the type of employee? (enter 1, 2 or 3)");
         System.out.printf("[1] Hourly\n[2] Salaried\n[3] Commissioned\n");
@@ -48,78 +42,27 @@ public class EmployeeMenu {
         schedule = paymentSchedules.getOptions().get(answer - 1);
 
         if (answer == 1) {
-
-            System.out.println("Enter the hourly rate/wage:");
-            Double hourlyRate = input.nextDouble();
-            input.nextLine(); // to read the 'Enter'
-            System.out.println();
-
+            Double hourlyRate = ConsoleUtils.readDoubleInput(input, "Enter the hourly rate/wage:");
             employee = new Hourly(UUID.randomUUID(), name, address, unionMember, paymentInfo, hourlyRate);
 
         } else if (answer == 2) {
-
-            System.out.println("Enter the salary:");
-            Double salary = input.nextDouble();
-            input.nextLine(); // to read the 'Enter'
-            System.out.println();
-
+            Double salary = ConsoleUtils.readDoubleInput(input, "Enter the salary:");
             employee = new Salaried(UUID.randomUUID(), name, address, unionMember, paymentInfo, salary);
 
         } else if (answer == 3) {
-
-            input.nextLine();
-            System.out.println("Enter the salary:");
-            Double salary = input.nextDouble();
-            System.out.println();
-
-            System.out.println("Enter the commission rate:");
-            Double commissionRate = input.nextDouble();
-            input.nextLine(); // to read the 'Enter'
-            System.out.println();
-
-            employee = new Commissioned(UUID.randomUUID(), name, address, unionMember, paymentInfo, salary,
-                    commissionRate);
-
+            Double salary = ConsoleUtils.readDoubleInput(input, "Enter the salary:");
+            Double commissionRate = ConsoleUtils.readDoubleInput(input, "Enter the Commission Rate:");
+            employee = new Commissioned(UUID.randomUUID(), name, address, unionMember, paymentInfo, salary, commissionRate);
+        
         } else {
-
             employee = new Employee(UUID.randomUUID(), name, address, unionMember, paymentInfo);
         }
 
-        System.out.println("Select payment method (enter 1, 2 or 3):");
-        for (PaymentMethod pm : PaymentMethod.values()) {
-            System.out.println("[" + i + "]. " + pm.getMethodDescription());
-            i++;
-        }
-        i = 1;
-        answer = input.nextInt();
-        paymentMethod = PaymentMethod.values()[answer - 1];
-        System.out.println();
-
-        System.out.println("Enter the bank number:");
-        int bank = input.nextInt();
-        System.out.println();
-
-        System.out.println("Enter the agency number:");
-        int agency = input.nextInt();
-        System.out.println();
-
-        System.out.println("Enter the account number:");
-        int account = input.nextInt();
-        System.out.println();
-
-        paymentInfo = new PaymentInfo(bank, agency, account, schedule, paymentMethod);
+        paymentInfo = PaymentsMenu.getPaymentInfoInput(input, schedule);
         employee.setPaymentInfo(paymentInfo);
 
-        input.nextLine();
-        System.out.println("Is the employee a union member? (Y/N)");
-        answerYorN = input.nextLine();
-        System.out.println();
-
-        if (answerYorN.equalsIgnoreCase("Y")) {
-            System.out.println("Enter the monthly union fee:");
-            Double unionFee = input.nextDouble();
-            input.nextLine(); // to read the 'Enter'
-            System.out.println();
+        if (ConsoleUtils.confirmation(input, "Is the employee a union member?")) {
+            Double unionFee = ConsoleUtils.readDoubleInput(input, "Enter the monthly union fee:");
             unionMember = new UnionMember(UUID.randomUUID(), true, unionFee);
             employee.setUnionMember(unionMember);
         }
@@ -155,18 +98,14 @@ public class EmployeeMenu {
             
             Hourly emp = (Hourly) hourlyEmployees.get(index);
             
-            LocalDate date = ConsoleUtils.getDateInput(input);
+            LocalDate date = ConsoleUtils.readDateInput(input);
 
-            System.out.println("Enter hour IN:");
-            int hourIn = input.nextInt();
-            System.out.println("Enter minutes IN:");
-            int minuteIn = input.nextInt();
+            int hourIn = ConsoleUtils.readIntInput(input, "Enter hour IN:");
+            int minuteIn = ConsoleUtils.readIntInput(input, "Enter minutes IN:");
             LocalTime timeIn = LocalTime.of(hourIn, minuteIn);
 
-            System.out.println("Enter hour OUT:");
-            int hourOut = input.nextInt();
-            System.out.println("Enter minutes OUT:");
-            int minuteOut = input.nextInt();
+            int hourOut = ConsoleUtils.readIntInput(input, "Enter hour OUT:");
+            int minuteOut = ConsoleUtils.readIntInput(input, "Enter minutes OUT:");
             LocalTime timeOut = LocalTime.of(hourOut, minuteOut);
 
             Timecard timecard = new Timecard(date, timeIn, timeOut);
@@ -182,15 +121,10 @@ public class EmployeeMenu {
         List<Employee> commissionedEmployees = employeeList.stream().filter(commissionedFilter).collect(Collectors.toList());
         
         if (!commissionedEmployees.isEmpty()) {
-            int index = getEmployeeIndex(input, commissionedEmployees);
+            Commissioned emp = (Commissioned) commissionedEmployees.get(getEmployeeIndex(input, commissionedEmployees));
+            LocalDate date = ConsoleUtils.readDateInput(input);
+            Double value = ConsoleUtils.readDoubleInput(input, "Enter sale value:");
             
-            Commissioned emp = (Commissioned) commissionedEmployees.get(index);
-            
-            LocalDate date = ConsoleUtils.getDateInput(input);
-
-            System.out.println("Enter sale value:");
-            double value = input.nextDouble();
-
             SaleReport saleReport = new SaleReport(date, value);
             emp.getSaleReports().add(saleReport);
             System.out.println("Sale Report added");
@@ -205,10 +139,8 @@ public class EmployeeMenu {
         
         if (!unionEmployees.isEmpty()) {
             Employee emp = unionEmployees.get(getEmployeeIndex(input, unionEmployees));
-
-            LocalDate date = ConsoleUtils.getDateInput(input);
-            System.out.println("Enter tax value:");
-            double value = input.nextDouble();
+            LocalDate date = ConsoleUtils.readDateInput(input);
+            Double value = ConsoleUtils.readDoubleInput(input, "Enter tax value");
 
             ServiceTax serviceTax = new ServiceTax(date, value);
             emp.getUnionMember().getServiceTaxes().add(serviceTax);
@@ -231,49 +163,33 @@ public class EmployeeMenu {
         System.out.println("[6] Union Monthly Tax");
         System.out.println("[0] Cancel");
 
-        int option = input.nextInt();
-        input.nextLine(); // enter
+        int option = ConsoleUtils.readIntInput(input, "");
         switch (option) {
             case 1:
-                System.out.println("Enter updated name:");
-                String name = input.nextLine();
+                String name = ConsoleUtils.readStringInput(input, "Enter updated name:");
                 emp.setName(name);
                 break;
             case 2:
-                System.out.println("Enter updated address:");
-                String address = input.nextLine();
+                String address = ConsoleUtils.readStringInput(input, "Enter updated address:");
                 emp.setAddress(address);
                 break;
             case 3:
                 System.out.println("What is the type of employee? (enter 1, 2 or 3)");
                 System.out.printf("[1] Hourly\n[2] Salaried\n[3] Commissioned\n");
-                int type = input.nextInt();
-                System.out.println();
+                int type = ConsoleUtils.readIntInput(input, "");
                 if (type == 1 && !(emp instanceof Hourly)) {
-                    System.out.println("Enter the hourly rate/wage:");
-                    Double hourlyRate = input.nextDouble();
-                    input.nextLine();
-                    System.out.println();
+                    Double hourlyRate = ConsoleUtils.readDoubleInput(input, "Enter the hourly rate/wage:");
                     emp = new Hourly(emp.getId(), emp.getName(), emp.getAddress(),
                         emp.getUnionMember(), emp.getPaymentInfo(), hourlyRate);
                 
                 } else if (type == 2 && !(emp instanceof Salaried)) {
-                    System.out.println("Enter the salary:");
-                    Double salary = input.nextDouble();
-                    input.nextLine();
-                    System.out.println();
+                    Double salary = ConsoleUtils.readDoubleInput(input, "Enter the salary:");
                     emp = new Salaried(emp.getId(), emp.getName(), emp.getAddress(),
                         emp.getUnionMember(), emp.getPaymentInfo(), salary);
                 
                 } else if (type == 3 && !(emp instanceof Commissioned)) {
-                    System.out.println("Enter the salary:");
-                    Double salary = input.nextDouble();
-                    input.nextLine();
-                    System.out.println();
-                    System.out.println("Enter the commission rate:");
-                    Double commissionRate = input.nextDouble();
-                    input.nextLine();
-                    System.out.println();
+                    Double salary = ConsoleUtils.readDoubleInput(input, "Enter the salary:");
+                    Double commissionRate = ConsoleUtils.readDoubleInput(input, "Enter the commission rate:");
                     emp = new Commissioned(emp.getId(), emp.getName(), emp.getAddress(),
                         emp.getUnionMember(), emp.getPaymentInfo(), salary, commissionRate);
 
@@ -283,12 +199,12 @@ public class EmployeeMenu {
                 break;
             case 4:
                 int i = 1;
-                System.out.println("Select payment method (enter 1, 2 or 3):");
+                String msg = "Select payment method (enter 1, 2 or 3):\n";
                 for (PaymentMethod pm : PaymentMethod.values()) {
-                    System.out.println("[" + i + "]. " + pm.getMethodDescription());
+                    msg += "[" + i + "]. " + pm.getMethodDescription() + "\n";
                     i++;
                 }
-                int answer = input.nextInt();
+                int answer = ConsoleUtils.readIntInput(input, msg);
                 if (answer >= 1 && answer <= 3) {
                     emp.getPaymentInfo().setPaymentMethod(PaymentMethod.values()[answer - 1]);
                     System.out.println("Done!");
@@ -299,27 +215,19 @@ public class EmployeeMenu {
                 break;
             case 5:
                 if (emp.getUnionMember() == null) {
-                    System.out.println("Employee is not a union member");
-                    System.out.println("Proceed to registration? (Y/N)");
-                    String confirm = input.nextLine();
-                    if (confirm.equals("Y")) {
-                        System.out.println("Enter the monthly union fee:");
-                        Double unionFee = input.nextDouble();
-                        input.nextLine();
+                    System.out.println("Employee is not a union member\n");
+                    if (ConsoleUtils.confirmation(input, "Proceed to registration?")) {
+                        Double unionFee = ConsoleUtils.readDoubleInput(input, "Enter the monthly union fee:");
                         emp.setUnionMember(new UnionMember(UUID.randomUUID(), true, unionFee));
                     }
                 } else if (emp.getUnionMember().isActive()) {
                     System.out.println("Employee is an active union member");
-                    System.out.println("Inactivate membership? (Y/N)");
-                    String confirm = input.nextLine();
-                    if (confirm.equals("Y")) {
+                    if (ConsoleUtils.confirmation(input, "Inactivate membership?")) {
                         emp.getUnionMember().setActive(false);
                     }
                 } else {
                     System.out.println("Employee is an inactive union member");
-                    System.out.println("Reactivate membership? (Y/N)");
-                    String confirm = input.nextLine();
-                    if (confirm.equals("Y")) {
+                    if (ConsoleUtils.confirmation(input, "Reactivate membership?")) {
                         emp.getUnionMember().setActive(true);
                     }
                 }
@@ -328,9 +236,7 @@ public class EmployeeMenu {
                 if (emp.getUnionMember() == null) {
                     System.out.println("Employee is not a union member");
                 } else {
-                    System.out.println("Enter the monthly union fee:");
-                    Double unionFee = input.nextDouble();
-                    input.nextLine();
+                    Double unionFee = ConsoleUtils.readDoubleInput(input, "Enter the monthly union fee:");
                     emp.getUnionMember().setFee(unionFee);
                 }
                 break;
@@ -347,7 +253,7 @@ public class EmployeeMenu {
             i++;
         }
         while (index <= 0 || index > empListSize) {
-            index = input.nextInt();
+            index = ConsoleUtils.readIntInput(input, "");
         }
         return index - 1;
     }
