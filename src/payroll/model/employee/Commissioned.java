@@ -1,9 +1,13 @@
 package payroll.model.employee;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import payroll.model.payments.Paycheck;
 import payroll.model.payments.PaymentInfo;
 import payroll.model.union.UnionMember;
 
@@ -74,7 +78,23 @@ public class Commissioned extends Employee {
 
     @Override
     Double calcPayment() {
-        // TODO Auto-generated method stub
-        return null;
+        Double payment = (double) this.getFixedSalary() / 2.0; // bi-weekly payment
+        List<SaleReport> validSales;
+        List<Paycheck> paychecks = this.getPaymentInfo().getPaychecks();
+
+        if (paychecks != null && !paychecks.isEmpty()) {
+            LocalDate lastPaymentDate = paychecks.get(paychecks.size() - 1).getDate();
+            Predicate<SaleReport> dateFilter = sale -> sale.getDate().isAfter(lastPaymentDate);
+            validSales = this.getSaleReports().stream().filter(dateFilter).collect(Collectors.toList());
+        } else {
+            validSales = this.getSaleReports();
+        }
+
+        for (SaleReport s : validSales) {
+            Double commission = s.getValue() * ((double) this.getCommissionRate() / 100.0);
+            payment += commission;
+        }
+        
+        return payment;
     }
 }

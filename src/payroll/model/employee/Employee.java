@@ -1,8 +1,14 @@
 package payroll.model.employee;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import payroll.model.payments.Paycheck;
 import payroll.model.payments.PaymentInfo;
+import payroll.model.union.ServiceTax;
 import payroll.model.union.UnionMember;
 
 public abstract class Employee {
@@ -93,6 +99,31 @@ public abstract class Employee {
 
     public String printBasicInfo() {
         return this.getName() + " id:" + this.getId();
+    }
+
+    public Double calcServiceTaxes() {
+        Double taxes = 0.0;
+        List<Paycheck> paychecks = this.getPaymentInfo().getPaychecks();
+        List<ServiceTax> validTaxes;
+        UnionMember unionMember = this.getUnionMember();
+        
+        if (unionMember != null) {
+            if (unionMember.isActive()) taxes += this.getUnionMember().getFee();
+            
+            if (paychecks != null && !paychecks.isEmpty()) {
+                LocalDate lastPaymentDate = paychecks.get(paychecks.size() - 1).getDate();
+                Predicate<ServiceTax> dateFilter = tax -> tax.getDate().isAfter(lastPaymentDate);
+                validTaxes = unionMember.getServiceTaxes().stream().filter(dateFilter).collect(Collectors.toList());
+            } else {
+                validTaxes = unionMember.getServiceTaxes();
+            }
+
+            for (ServiceTax s : validTaxes) {
+               taxes += s.getValue(); 
+            }
+        }
+
+        return taxes;
     }
 
     abstract Double calcPayment();

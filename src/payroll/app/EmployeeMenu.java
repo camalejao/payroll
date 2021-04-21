@@ -191,7 +191,8 @@ public class EmployeeMenu {
                 
                 } else if (type == 3 && !(emp instanceof Commissioned)) {
                     Double salary = ConsoleUtils.readDoubleInput(input, "Enter the salary:");
-                    Double commissionRate = ConsoleUtils.readDoubleInput(input, "Enter the commission rate:");
+                    String msg = "Enter the commission rate (this value will be divided by 100 to get a %):";
+                    Double commissionRate = ConsoleUtils.readDoubleInput(input, msg);
                     emp = new Commissioned(emp.getId(), emp.getName(), emp.getAddress(),
                         emp.getUnionMember(), emp.getPaymentInfo(), salary, commissionRate);
 

@@ -1,9 +1,15 @@
 package payroll.model.employee;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import payroll.model.payments.Paycheck;
 import payroll.model.payments.PaymentInfo;
 import payroll.model.union.UnionMember;
 
@@ -59,7 +65,33 @@ public class Hourly extends Employee {
 
     @Override
     Double calcPayment() {
-        // TODO Auto-generated method stub
-        return null;
+        Double payment = 0.0, hours = 0.0, extraHours = 0.0;
+        List<Timecard> validTimecards;
+        List<Paycheck> paychecks = this.getPaymentInfo().getPaychecks();
+        
+        if (paychecks != null && !paychecks.isEmpty()) {
+            LocalDate lastPaymentDate = paychecks.get(paychecks.size() - 1).getDate();
+            Predicate<Timecard> dateFilter = timecard -> timecard.getDate().isAfter(lastPaymentDate);
+            validTimecards = this.getTimecards().stream().filter(dateFilter).collect(Collectors.toList());
+        } else {
+            validTimecards = this.getTimecards();
+        }
+
+        for (Timecard t : validTimecards) {
+            LocalTime timeIn = t.getTimeIn();
+            LocalTime timeOut = t.getTimeOut();
+            Duration duration = Duration.between(timeIn, timeOut);
+            hours = (double) duration.toSeconds() / 3600;
+
+            if (hours > 8.0) {
+                extraHours = hours - 8.0;
+                payment += 8.0 * this.getHourlyRate();
+                payment += extraHours * this.getHourlyRate();
+            } else if (hours >= 0.0) {
+                payment += hours * this.getHourlyRate();
+            }
+        }
+
+        return payment;
     }
 }
