@@ -41,4 +41,10 @@ public class Salaried extends Employee {
             "}";
     }
 
+    @Override
+    Double calcPayment() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

@@ -71,4 +71,10 @@ public class Commissioned extends Employee {
             ", saleReports='" + getSaleReports() + "'" +
             "}";
     }
+
+    @Override
+    Double calcPayment() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

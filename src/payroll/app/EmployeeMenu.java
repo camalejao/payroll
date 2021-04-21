@@ -55,7 +55,9 @@ public class EmployeeMenu {
             employee = new Commissioned(UUID.randomUUID(), name, address, unionMember, paymentInfo, salary, commissionRate);
         
         } else {
-            employee = new Employee(UUID.randomUUID(), name, address, unionMember, paymentInfo);
+            System.out.println("Invalid Option. Proceeding with salaried");
+            Double salary = ConsoleUtils.readDoubleInput(input, "Enter the salary:");
+            employee = new Salaried(UUID.randomUUID(), name, address, unionMember, paymentInfo, salary);
         }
 
         paymentInfo = PaymentsMenu.getPaymentInfoInput(input, schedule);

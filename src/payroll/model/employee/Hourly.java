@@ -56,4 +56,10 @@ public class Hourly extends Employee {
             ", timecards='" + getTimecards() + "'" +
             "}";
     }
+
+    @Override
+    Double calcPayment() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

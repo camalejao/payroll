@@ -5,7 +5,7 @@ import java.util.UUID;
 import payroll.model.payments.PaymentInfo;
 import payroll.model.union.UnionMember;
 
-public class Employee {
+public abstract class Employee {
 
     private UUID id;
 
@@ -94,4 +94,6 @@ public class Employee {
     public String printBasicInfo() {
         return this.getName() + " id:" + this.getId();
     }
+
+    abstract Double calcPayment();
 }
