@@ -86,7 +86,7 @@ public class Hourly extends Employee {
             if (hours > 8.0) {
                 extraHours = hours - 8.0;
                 payment += 8.0 * this.getHourlyRate();
-                payment += extraHours * this.getHourlyRate();
+                payment += extraHours * this.getHourlyRate() * 1.5;
             } else if (hours >= 0.0) {
                 payment += hours * this.getHourlyRate();
             }
