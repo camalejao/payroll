@@ -101,6 +101,17 @@ public abstract class Employee {
         return this.getName() + " id:" + this.getId();
     }
 
+
+    public Double getUnionFee() {
+        Double fee = 0.0;
+        UnionMember unionMember = this.getUnionMember();
+        if (unionMember != null) {
+            if (unionMember.isActive()) fee += this.getUnionMember().getFee();
+        }
+        return fee;
+    }
+
+
     public Double calcServiceTaxes() {
         Double taxes = 0.0;
         List<Paycheck> paychecks = this.getPaymentInfo().getPaychecks();
@@ -108,8 +119,6 @@ public abstract class Employee {
         UnionMember unionMember = this.getUnionMember();
         
         if (unionMember != null) {
-            if (unionMember.isActive()) taxes += this.getUnionMember().getFee();
-            
             if (paychecks != null && !paychecks.isEmpty()) {
                 LocalDate lastPaymentDate = paychecks.get(paychecks.size() - 1).getDate();
                 Predicate<ServiceTax> dateFilter = tax -> tax.getDate().isAfter(lastPaymentDate);

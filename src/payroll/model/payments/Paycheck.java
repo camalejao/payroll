@@ -8,25 +8,27 @@ public class Paycheck {
     
     private Employee employee;
 
-    private Double value;
-
     private LocalDate date;
 
-    private Double hours;
+    private Double grossPay;
 
-    private Double extraHours;
+    private Double deductions;
 
-    private Double commissions;
+    private boolean includesUnionTax;
 
 
-    public Paycheck(Employee employee, Double value, LocalDate date,
-                    Double hours, Double extraHours, Double commissions) {
+    public Paycheck(Employee employee, LocalDate date) {
         this.employee = employee;
-        this.value = value;
         this.date = date;
-        this.hours = hours;
-        this.extraHours = extraHours;
-        this.commissions = commissions;
+    }
+
+    public Paycheck(Employee employee, LocalDate date, Double grossPay,
+                    Double deductions, boolean includesUnionTax) {
+        this.employee = employee;
+        this.date = date;
+        this.grossPay = grossPay;
+        this.deductions = deductions;
+        this.includesUnionTax = includesUnionTax;
     }
     
 
@@ -39,15 +41,6 @@ public class Paycheck {
     }
 
 
-    public Double getValue() {
-        return this.value;
-    }
-
-    public void setValue(Double value) {
-        this.value = value;
-    }
-
-
     public LocalDate getDate() {
         return this.date;
     }
@@ -57,30 +50,38 @@ public class Paycheck {
     }
 
 
-    public Double getHours() {
-        return this.hours;
+    public Double getGrossPay() {
+        return this.grossPay;
     }
 
-    public void setHours(Double hours) {
-        this.hours = hours;
-    }
-
-
-    public Double getExtraHours() {
-        return this.extraHours;
-    }
-
-    public void setExtraHours(Double extraHours) {
-        this.extraHours = extraHours;
+    public void setGrossPay(Double grossPay) {
+        this.grossPay = grossPay;
     }
 
 
-    public Double getCommissions() {
-        return this.commissions;
+    public Double getDeductions() {
+        return this.deductions;
     }
 
-    public void setCommissions(Double commissions) {
-        this.commissions = commissions;
+    public void setDeductions(Double deductions) {
+        this.deductions = deductions;
     }
 
+
+    public boolean isIncludesUnionTax() {
+        return this.includesUnionTax;
+    }
+
+    public boolean getIncludesUnionTax() {
+        return this.includesUnionTax;
+    }
+
+    public void setIncludesUnionTax(boolean includesUnionTax) {
+        this.includesUnionTax = includesUnionTax;
+    }
+
+
+    public Double getNetPay() {
+        return this.grossPay - this.deductions;
+    }
 }
