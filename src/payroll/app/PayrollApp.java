@@ -25,6 +25,7 @@ public class PayrollApp {
             System.out.println("[5] Add Sale Report");
             System.out.println("[6] Add Service Tax");
             System.out.println("[7] Edit Employee");
+            System.out.println("[8] Run Payroll");
             System.out.println("[0] Exit");
 
             option = input.nextInt();
@@ -88,6 +89,16 @@ public class PayrollApp {
                         System.out.println("No employees registered to edit");
                     }
                     ConsoleUtils.pressEnterToContinue(input);
+                
+                case 8:
+                    PaymentsMenu.payroll(input, employeeList);
+                    // if (!employeeList.isEmpty()) {
+                    //     PaymentsMenu.payroll(input, employeeList);
+                    // } else {
+                    //     System.out.println("No employees registered to pay");
+                    // }
+                    ConsoleUtils.pressEnterToContinue(input);
+
                 default:
                     break;
             }
