@@ -2,14 +2,19 @@ package payroll.app;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import payroll.app.util.ConsoleUtils;
+import payroll.model.employee.Commissioned;
 import payroll.model.employee.Employee;
+import payroll.model.employee.Hourly;
+import payroll.model.employee.Salaried;
+import payroll.model.payments.Paycheck;
 import payroll.model.payments.PaymentInfo;
 import payroll.model.payments.PaymentMethod;
 
@@ -44,35 +49,61 @@ public class PaymentsMenu {
     }
 
     public static void payroll(Scanner input, List<Employee> employeeList) {
-        System.out.println("Please insert START date:");
+        Paycheck paycheck;
+
+        System.out.println("\nPlease insert START date:");
         LocalDate start = ConsoleUtils.readDateInput(input);
-        System.out.println("Please insert END date:");
+        System.out.println("\nPlease insert END date:");
         LocalDate end = ConsoleUtils.readDateInput(input);
 
         LocalDate currentDate = start;
-        int diff = Period.between(start, end.plusDays(1)).getDays();
+        long diff = ChronoUnit.DAYS.between(start, end.plusDays(1));
         System.out.println(diff);
-        long diff2 = ChronoUnit.DAYS.between(start, end.plusDays(1));
-        System.out.println(diff2);
         int fridayCounter = 0;
 
-        for (int i = 0; i < diff2; i++) {
+        for (int i = 0; i < diff; i++) {
             currentDate = start.plusDays(i);
-            System.out.println("Current Date: " + currentDate.toString());
 
             if (currentDate.isEqual(getLastWorkingDateOfMonth(currentDate.with(
                 TemporalAdjusters.lastDayOfMonth())))) {
-                System.out.println("Last day of month, pay salaried employees");
-                // TODO: process payment to salaried employees
+                System.out.println("\n\nLast working day of month (" + currentDate.toString() + "), pay salaried employees");
+                Predicate<Employee> salariedFilter = employee -> employee instanceof Salaried;
+                List<Employee> salariedEmployees = employeeList.stream().filter(salariedFilter).collect(Collectors.toList());
+                if (!salariedEmployees.isEmpty()) {
+                    for (Employee e : salariedEmployees) {
+                        paycheck = e.processPayment(currentDate);
+                        System.out.println(paycheck.toString());
+                    }
+                } else {
+                    System.out.println("No hourly employees!");
+                }
             }
 
             if (currentDate.getDayOfWeek() == DayOfWeek.FRIDAY) {
-                System.out.println("Friday, pay hourly employees");
-                // TODO: process payment to hourly employees
+                System.out.println("\n\nFriday (" + currentDate.toString() + "), pay hourly employees");
+                Predicate<Employee> hourlyFilter = employee -> employee instanceof Hourly;
+                List<Employee> hourlyEmployees = employeeList.stream().filter(hourlyFilter).collect(Collectors.toList());
+                if (!hourlyEmployees.isEmpty()) {
+                    for (Employee e : hourlyEmployees) {
+                        paycheck = e.processPayment(currentDate);
+                        System.out.println(paycheck.toString());
+                    }
+                } else {
+                    System.out.println("No hourly employees!");
+                }
 
                 if (fridayCounter % 2 == 0) {
-                    System.out.println("Friday #" + fridayCounter + ", pay commissioned employees");
-                    // TODO: process payment to commissioned employees
+                    System.out.println("\n\nFriday #" + fridayCounter + " (" + currentDate.toString() + "), pay commissioned employees");
+                    Predicate<Employee> commissionedFilter = employee -> employee instanceof Commissioned;
+                    List<Employee> commissionedEmployees = employeeList.stream().filter(commissionedFilter).collect(Collectors.toList());
+                    if (!commissionedEmployees.isEmpty()) {
+                        for (Employee e : commissionedEmployees) {
+                            paycheck = e.processPayment(currentDate);
+                            System.out.println(paycheck.toString());
+                        }
+                    } else {
+                        System.out.println("No commissioned employees!");
+                    }
                 }
                 fridayCounter += 1;
             }

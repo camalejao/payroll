@@ -135,5 +135,38 @@ public abstract class Employee {
         return taxes;
     }
 
-    abstract Double calcPayment();
+    public Paycheck processPayment(LocalDate paymentDate) {
+        Paycheck newPaycheck = null;
+
+        Double grossPay = this.calcPayment(paymentDate);
+        Double deductions = this.calcServiceTaxes();
+        Double unionFee = this.getUnionFee();
+        boolean includes = false;
+        
+        if (unionFee > 0.0) {
+            Paycheck lastPayment = this.getPaymentInfo().getLastPayment();
+
+            if (lastPayment != null) {
+                LocalDate lastPaymentDate = lastPayment.getDate();
+                
+                if (!(lastPaymentDate.getMonthValue() == paymentDate.getMonthValue()
+                    && lastPaymentDate.getYear() == paymentDate.getYear())) {
+                    deductions += unionFee;
+                    includes = true;
+                }
+
+            } else {
+                deductions += unionFee;
+                includes = true;
+            }
+        }
+
+        newPaycheck = new Paycheck(this, paymentDate, grossPay, deductions, includes);
+
+        this.getPaymentInfo().getPaychecks().add(newPaycheck);
+
+        return newPaycheck;
+    }
+
+    abstract Double calcPayment(LocalDate paymentDate);
 }

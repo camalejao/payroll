@@ -77,19 +77,22 @@ public class Commissioned extends Employee {
     }
 
     @Override
-    Double calcPayment() {
+    Double calcPayment(LocalDate paymentDate) {
         Double payment = (double) this.getFixedSalary() / 2.0; // bi-weekly payment
         List<SaleReport> validSales;
         List<Paycheck> paychecks = this.getPaymentInfo().getPaychecks();
 
+        Predicate<SaleReport> dateFilter;
+
         if (paychecks != null && !paychecks.isEmpty()) {
             LocalDate lastPaymentDate = paychecks.get(paychecks.size() - 1).getDate();
-            Predicate<SaleReport> dateFilter = sale -> sale.getDate().isAfter(lastPaymentDate);
-            validSales = this.getSaleReports().stream().filter(dateFilter).collect(Collectors.toList());
+            dateFilter = sale -> sale.getDate().isAfter(lastPaymentDate) && !sale.getDate().isAfter(paymentDate);
         } else {
-            validSales = this.getSaleReports();
+            dateFilter = sale -> !sale.getDate().isAfter(paymentDate);
         }
-
+        
+        validSales = this.getSaleReports().stream().filter(dateFilter).collect(Collectors.toList());
+        
         for (SaleReport s : validSales) {
             Double commission = s.getValue() * ((double) this.getCommissionRate() / 100.0);
             payment += commission;

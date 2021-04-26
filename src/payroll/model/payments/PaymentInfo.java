@@ -98,4 +98,15 @@ public class PaymentInfo {
             ", paymentMethod='" + getPaymentMethod().getMethodDescription() + "'" +
             "}";
     }
+
+
+    public Paycheck getLastPayment() {
+        Paycheck lastPayment = null;
+
+        if (this.paychecks != null && !this.paychecks.isEmpty()) {
+            lastPayment = this.paychecks.get(this.paychecks.size() - 1);
+        }
+
+        return lastPayment;
+    }
 }

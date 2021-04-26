@@ -64,19 +64,21 @@ public class Hourly extends Employee {
     }
 
     @Override
-    Double calcPayment() {
+    Double calcPayment(LocalDate paymentDate) {
         Double payment = 0.0, hours = 0.0, extraHours = 0.0;
         List<Timecard> validTimecards;
         List<Paycheck> paychecks = this.getPaymentInfo().getPaychecks();
         
+        Predicate<Timecard> dateFilter;
         if (paychecks != null && !paychecks.isEmpty()) {
             LocalDate lastPaymentDate = paychecks.get(paychecks.size() - 1).getDate();
-            Predicate<Timecard> dateFilter = timecard -> timecard.getDate().isAfter(lastPaymentDate);
-            validTimecards = this.getTimecards().stream().filter(dateFilter).collect(Collectors.toList());
+            dateFilter = timecard -> timecard.getDate().isAfter(lastPaymentDate) && !timecard.getDate().isAfter(paymentDate);
         } else {
-            validTimecards = this.getTimecards();
+            dateFilter = timecard -> !timecard.getDate().isAfter(paymentDate);
         }
-
+        
+        validTimecards = this.getTimecards().stream().filter(dateFilter).collect(Collectors.toList());
+        
         for (Timecard t : validTimecards) {
             LocalTime timeIn = t.getTimeIn();
             LocalTime timeOut = t.getTimeOut();

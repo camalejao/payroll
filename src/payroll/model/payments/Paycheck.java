@@ -84,4 +84,16 @@ public class Paycheck {
     public Double getNetPay() {
         return this.grossPay - this.deductions;
     }
+
+    
+    @Override
+    public String toString() {
+        String str = "\nEmployee:" + this.getEmployee().printBasicInfo();
+        str += "\nGross Pay: " + this.getGrossPay();
+        str += "\nDeductions: " + this.getDeductions();
+        str += "\nNet Pay (gross - deductions): " + this.getNetPay();
+        str += "\n==================================\n";
+        
+        return str;
+    }
 }

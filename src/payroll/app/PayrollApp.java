@@ -91,12 +91,11 @@ public class PayrollApp {
                     ConsoleUtils.pressEnterToContinue(input);
                 
                 case 8:
-                    PaymentsMenu.payroll(input, employeeList);
-                    // if (!employeeList.isEmpty()) {
-                    //     PaymentsMenu.payroll(input, employeeList);
-                    // } else {
-                    //     System.out.println("No employees registered to pay");
-                    // }
+                    if (!employeeList.isEmpty()) {
+                        PaymentsMenu.payroll(input, employeeList);
+                    } else {
+                        System.out.println("No employees registered to pay");
+                    }
                     ConsoleUtils.pressEnterToContinue(input);
 
                 default:

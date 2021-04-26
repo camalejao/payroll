@@ -1,5 +1,6 @@
 package payroll.model.employee;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import payroll.model.payments.PaymentInfo;
@@ -42,7 +43,7 @@ public class Salaried extends Employee {
     }
 
     @Override
-    Double calcPayment() {
+    Double calcPayment(LocalDate paymentDate) {
         return this.salary;
     }
 
