@@ -59,8 +59,16 @@ public class Hourly extends Employee {
     public String toString() {
         return super.toString() + "\nHourly: {" +
             " hourlyRate='" + getHourlyRate() + "'" +
-            ", timecards='" + getTimecards() + "'" +
+            ", timecards='" + getTimecardStrings() + "'" +
             "}";
+    }
+
+    private String getTimecardStrings() {
+        String str = "";
+        for (Timecard tc : this.timecards) {
+            str += "(" + tc.toString() + ") ";
+        }
+        return str;
     }
 
     @Override

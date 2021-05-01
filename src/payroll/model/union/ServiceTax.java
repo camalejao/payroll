@@ -31,4 +31,9 @@ public class ServiceTax {
         this.value = value;
     }
 
+
+    @Override
+    public String toString() {
+        return "value: " + this.value + ", date: " + this.date.toString();
+    }
 }

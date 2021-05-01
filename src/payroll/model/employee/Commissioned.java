@@ -71,9 +71,17 @@ public class Commissioned extends Employee {
     public String toString() {
         return super.toString() + "\nCommissioned: {" +
             " fixedSalary='" + getFixedSalary() + "'" +
-            ", commissionRate='" + getCommissionRate() + "'" +
-            ", saleReports='" + getSaleReports() + "'" +
+            ", commissionRate='" + getCommissionRate() + "%'" +
+            ", saleReports='" + getSaleReportStrings() + "'" +
             "}";
+    }
+
+    private String getSaleReportStrings() {
+        String str = "";
+        for (SaleReport sr : this.saleReports) {
+            str += "(" + sr.toString() + "), ";
+        }
+        return str;
     }
 
     @Override

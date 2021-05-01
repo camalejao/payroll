@@ -31,4 +31,9 @@ public class SaleReport {
         this.value = value;
     }
 
+
+    @Override
+    public String toString() {
+        return "value: " + this.value + ", date: " + this.date.toString();
+    }
 }

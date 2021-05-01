@@ -46,4 +46,9 @@ public class Timecard {
         this.timeOut = timeOut;
     }
 
+
+    @Override
+    public String toString() {
+        return "date: " + this.date.toString() + ", time: " + this.timeIn + "-" + this.timeOut;
+    }
 }
