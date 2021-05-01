@@ -22,6 +22,7 @@ public class PayrollApp {
             System.out.println("[6] Add Service Tax");
             System.out.println("[7] Edit Employee");
             System.out.println("[8] Run Payroll");
+            System.out.println("[9] Add new Payment Schedule");
             System.out.println("[0] Exit");
 
             option = input.nextInt();
@@ -80,7 +81,7 @@ public class PayrollApp {
                 
                 case 7:
                     if (!company.isEmployeeListEmpty()) {
-                        EmployeeMenu.editEmployee(input, company.getEmployees());
+                        EmployeeMenu.editEmployee(input, company.getEmployees(), company.getPaymentSchedules());
                     } else {
                         System.out.println("No employees registered to edit");
                     }
@@ -93,6 +94,11 @@ public class PayrollApp {
                     } else {
                         System.out.println("No employees registered to pay");
                     }
+                    ConsoleUtils.pressEnterToContinue(input);
+                    break;
+                
+                case 9:
+                    company.addPaymentSchedule(PaymentsMenu.registerNewPaymentSchedule(input));
                     ConsoleUtils.pressEnterToContinue(input);
                     break;
 

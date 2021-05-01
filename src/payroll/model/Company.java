@@ -102,6 +102,7 @@ public class Company {
 
     public void addPaymentSchedule(PaymentSchedule ps) {
         this.paymentSchedules.add(ps);
+        System.out.println("Schedule '" + ps.toString() + "' added.");
     }
 
 

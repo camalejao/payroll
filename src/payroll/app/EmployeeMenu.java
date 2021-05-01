@@ -146,7 +146,8 @@ public class EmployeeMenu {
         }
     }
 
-    public static void editEmployee(Scanner input, List<Employee> employeeList) {
+    public static void editEmployee(Scanner input, List<Employee> employeeList, 
+                                    List<PaymentSchedule> paymentSchedules) {
         int idx = EmployeeUtils.getEmployeeIndex(input, employeeList);
         Employee emp = employeeList.get(idx);
 
@@ -157,6 +158,7 @@ public class EmployeeMenu {
         System.out.println("[4] Payment Method");
         System.out.println("[5] Union Member Status");
         System.out.println("[6] Union Monthly Tax");
+        System.out.println("[7] Payment Schedule");
         System.out.println("[0] Cancel");
 
         int option = ConsoleUtils.readIntInput(input, "");
@@ -235,6 +237,20 @@ public class EmployeeMenu {
                 } else {
                     Double unionFee = ConsoleUtils.readDoubleInput(input, "Enter the monthly union fee:");
                     emp.getUnionMember().setFee(unionFee);
+                }
+                break;
+            case 7:
+                int count = 1;
+                String str = "Select payment schedule:\n";
+                for (PaymentSchedule ps : paymentSchedules) {
+                    str += count + ") " + ps.toString() + "\n";
+                    count++;
+                }
+                int psIdx = ConsoleUtils.readIntInput(input, str);
+                if (psIdx >= 1 && psIdx <= count) {
+                    emp.getPaymentInfo().setPaymentSchedule(paymentSchedules.get(psIdx - 1));
+                } else {
+                    System.out.println("Invalid option, current schedule will be kept.");
                 }
                 break;
             default:
