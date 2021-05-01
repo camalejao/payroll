@@ -16,6 +16,7 @@ public class Paycheck {
 
     private boolean includesUnionTax;
 
+    private PaymentMethod paymentMethod;
 
     public Paycheck(Employee employee, LocalDate date) {
         this.employee = employee;
@@ -29,6 +30,7 @@ public class Paycheck {
         this.grossPay = grossPay;
         this.deductions = deductions;
         this.includesUnionTax = includesUnionTax;
+        this.paymentMethod = employee.getPaymentInfo().getPaymentMethod();
     }
     
 
@@ -81,6 +83,15 @@ public class Paycheck {
     }
 
 
+    public PaymentMethod getPaymentMethod() {
+        return this.paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+    
+
     public Double getNetPay() {
         return this.grossPay - this.deductions;
     }
@@ -88,11 +99,12 @@ public class Paycheck {
     
     @Override
     public String toString() {
-        String str = "\nEmployee:" + this.getEmployee().printBasicInfo();
+        String str = "\nEmployee: " + this.getEmployee().printBasicInfo();
+        str += "\nDate: " + this.getDate();
         str += "\nGross Pay: " + this.getGrossPay();
         str += "\nDeductions: " + this.getDeductions();
         str += "\nNet Pay (gross - deductions): " + this.getNetPay();
-        str += "\n==================================\n";
+        str += "\nPayment Method: " + this.getPaymentMethod().getMethodDescription() + "\n";
         
         return str;
     }

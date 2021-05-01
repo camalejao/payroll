@@ -86,7 +86,7 @@ public class PaymentSchedule {
             if (this.dayOfMonth != null) {
                 return this.dayOfMonth == date.getDayOfMonth();
             } else {
-                return date == DateUtils.getLastWorkingDateOfMonth(date.with(TemporalAdjusters.lastDayOfMonth()));
+                return date.isEqual(DateUtils.getLastWorkingDateOfMonth(date.with(TemporalAdjusters.lastDayOfMonth())));
             }
 
         } else if (this.schedule == Schedule.WEEKLY) {

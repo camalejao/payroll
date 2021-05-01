@@ -111,4 +111,27 @@ public class Company {
         System.out.println("Employee removed.");
     }
 
+
+	public void addPaymentReports(List<PaymentsReport> payroll) {
+        if (!payroll.isEmpty()) {
+            this.payments.addAll(payroll);
+            System.out.println("Reports from payroll execution stored.");
+        } else {
+            System.out.println("Nothing to be stored from payroll.");
+        }
+	}
+
+
+    public void printPaymentReports() {
+        if (this.payments.isEmpty()) {
+            System.out.println("No payments stored.");
+            return;
+        }
+
+        for (PaymentsReport pr : this.payments) {
+            System.out.println(pr.toString());
+            System.out.println("====================================");
+        }
+    }
+
 }

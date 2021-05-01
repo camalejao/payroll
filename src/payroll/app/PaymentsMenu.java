@@ -3,6 +3,7 @@ package payroll.app;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,6 +13,7 @@ import payroll.model.payments.Paycheck;
 import payroll.model.payments.PaymentInfo;
 import payroll.model.payments.PaymentMethod;
 import payroll.model.payments.PaymentSchedule;
+import payroll.model.payments.PaymentsReport;
 import payroll.model.payments.Schedule;
 
 public class PaymentsMenu {
@@ -44,8 +46,10 @@ public class PaymentsMenu {
         return new PaymentInfo(bank, agency, account, paymentMethod, null);
     }
 
-    public static void payroll(Scanner input, List<Employee> employeeList) {
+    public static List<PaymentsReport> payroll(Scanner input, List<Employee> employeeList) {
         Paycheck paycheck;
+        List<Paycheck> paycheckList;
+        List<PaymentsReport> paymentReportsList = new ArrayList<>();
 
         System.out.println("\nPlease insert START date:");
         LocalDate start = ConsoleUtils.readDateInput(input);
@@ -63,13 +67,22 @@ public class PaymentsMenu {
             currentDate = start.plusDays(i);
             if (currentDate.getDayOfWeek() == startingDay) weekCounter++;
 
+            paycheckList = new ArrayList<>();
+
             for (Employee e : employeeList) {
                 if (e.getPaymentInfo().isPaymentDay(weekCounter, currentDate)) {
                     paycheck = e.processPayment(currentDate);
                     System.out.println(paycheck.toString());
+                    paycheckList.add(paycheck);
                 }
             }
+
+            if (!paycheckList.isEmpty()) {
+                paymentReportsList.add(new PaymentsReport(paycheckList, currentDate));
+            }
         }
+
+        return paymentReportsList;
     }
 
     public static PaymentSchedule registerNewPaymentSchedule(Scanner input) {

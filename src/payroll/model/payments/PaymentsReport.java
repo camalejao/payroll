@@ -33,4 +33,21 @@ public class PaymentsReport {
         this.date = date;
     }
 
+
+    @Override
+    public String toString() {
+        String str = "Payments Report\nDate: " + this.date + "\n";
+        str += getPaycheckStrings();
+        return str;
+    }
+
+
+    private String getPaycheckStrings() {
+        String str = "";
+        for (Paycheck pc : this.paychecks) {
+            str += pc.toString();
+        }
+        return str;
+    }
+
 }

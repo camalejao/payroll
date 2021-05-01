@@ -23,6 +23,7 @@ public class PayrollApp {
             System.out.println("[7] Edit Employee");
             System.out.println("[8] Run Payroll");
             System.out.println("[9] Add new Payment Schedule");
+            System.out.println("[10] Print Payment Reports");
             System.out.println("[0] Exit");
 
             option = input.nextInt();
@@ -90,7 +91,7 @@ public class PayrollApp {
                 
                 case 8:
                     if (!company.isEmployeeListEmpty()) {
-                        PaymentsMenu.payroll(input, company.getEmployees());
+                        company.addPaymentReports(PaymentsMenu.payroll(input, company.getEmployees()));
                     } else {
                         System.out.println("No employees registered to pay");
                     }
@@ -101,7 +102,11 @@ public class PayrollApp {
                     company.addPaymentSchedule(PaymentsMenu.registerNewPaymentSchedule(input));
                     ConsoleUtils.pressEnterToContinue(input);
                     break;
-
+                
+                case 10:
+                    company.printPaymentReports();
+                    ConsoleUtils.pressEnterToContinue(input);
+                    break;
                 default:
                     break;
             }

@@ -111,8 +111,21 @@ public class PaymentInfo {
         return lastPayment;
     }
 
+    private boolean haveBeenPaidThisDate(LocalDate date) {
+        for (Paycheck paycheck : this.paychecks) {
+            if (paycheck.getDate().isEqual(date)) {
+                String msg = "Employee " + paycheck.getEmployee().printBasicInfo();
+                msg += " matched this payment date (" + date.toString() + ")";
+                msg += ", but has already been paid.\n";
+                System.out.println(msg);
+                return true;
+            }
+        }
+        return false;
+    }
 
     public boolean isPaymentDay(int weekCounter, LocalDate currentDate) {
-        return this.paymentSchedule.checkIfDateIsInSchedule(weekCounter, currentDate);
+        return (!this.haveBeenPaidThisDate(currentDate)
+            && this.paymentSchedule.checkIfDateIsInSchedule(weekCounter, currentDate));
     }
 }
