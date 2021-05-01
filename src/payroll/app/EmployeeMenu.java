@@ -5,10 +5,9 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import payroll.app.util.ConsoleUtils;
+import payroll.app.util.EmployeeUtils;
 import payroll.model.employee.Commissioned;
 import payroll.model.employee.Employee;
 import payroll.model.employee.Hourly;
@@ -23,14 +22,14 @@ import payroll.model.union.UnionMember;
 
 public class EmployeeMenu {
 
-    public static Employee registerEmployee(Scanner input, PaymentSchedule paymentSchedules) {
+    public static Employee registerEmployee(Scanner input, List<PaymentSchedule> paymentSchedules) {
 
         Employee employee;
         PaymentInfo paymentInfo = null;
+        PaymentSchedule paymentSchedule = null;
         UnionMember unionMember = null;
 
         int answer;
-        String schedule = "";
 
         String name = ConsoleUtils.readStringInput(input, "\nEnter the employee's name:");
         String address = ConsoleUtils.readStringInput(input, "Enter the address:");
@@ -39,28 +38,32 @@ public class EmployeeMenu {
         System.out.printf("[1] Hourly\n[2] Salaried\n[3] Commissioned\n");
         answer = input.nextInt();
         System.out.println();
-        schedule = paymentSchedules.getOptions().get(answer - 1);
 
         if (answer == 1) {
             Double hourlyRate = ConsoleUtils.readDoubleInput(input, "Enter the hourly rate/wage:");
             employee = new Hourly(UUID.randomUUID(), name, address, unionMember, paymentInfo, hourlyRate);
+            paymentSchedule = paymentSchedules.get(0);
 
         } else if (answer == 2) {
             Double salary = ConsoleUtils.readDoubleInput(input, "Enter the salary:");
             employee = new Salaried(UUID.randomUUID(), name, address, unionMember, paymentInfo, salary);
+            paymentSchedule = paymentSchedules.get(1);
 
         } else if (answer == 3) {
             Double salary = ConsoleUtils.readDoubleInput(input, "Enter the salary:");
-            Double commissionRate = ConsoleUtils.readDoubleInput(input, "Enter the Commission Rate:");
+            Double commissionRate = ConsoleUtils.readDoubleInput(input, "Enter the Commission Rate (NOTE: this value will be divided by 100):");
             employee = new Commissioned(UUID.randomUUID(), name, address, unionMember, paymentInfo, salary, commissionRate);
-        
+            paymentSchedule = paymentSchedules.get(2);
+
         } else {
             System.out.println("Invalid Option. Proceeding with salaried");
             Double salary = ConsoleUtils.readDoubleInput(input, "Enter the salary:");
             employee = new Salaried(UUID.randomUUID(), name, address, unionMember, paymentInfo, salary);
+            paymentSchedule = paymentSchedules.get(1);
         }
 
-        paymentInfo = PaymentsMenu.getPaymentInfoInput(input, schedule);
+        paymentInfo = PaymentsMenu.getPaymentInfoInput(input);
+        paymentInfo.setPaymentSchedule(paymentSchedule);
         employee.setPaymentInfo(paymentInfo);
 
         if (ConsoleUtils.confirmation(input, "Is the employee a union member?")) {
@@ -86,19 +89,14 @@ public class EmployeeMenu {
         }
     }
 
-    public static void removeEmployee(Scanner input, List<Employee> employeeList) {
-        employeeList.remove(getEmployeeIndex(input, employeeList));
-        System.out.println("Employee Removed");
+    public static int removeEmployee(Scanner input, List<Employee> employeeList) {
+        return EmployeeUtils.getEmployeeIndex(input, employeeList);
     }
 
-    public static void addTimecard(Scanner input, List<Employee> employeeList) {
-        Predicate<Employee> hourlyFilter = employee -> employee instanceof Hourly;
-        List<Employee> hourlyEmployees = employeeList.stream().filter(hourlyFilter).collect(Collectors.toList());
-        
+    public static void addTimecard(Scanner input, List<Employee> hourlyEmployees) {
         if (!hourlyEmployees.isEmpty()) {
-            int index = getEmployeeIndex(input, hourlyEmployees);
-            
-            Hourly emp = (Hourly) hourlyEmployees.get(index);
+            Hourly emp = (Hourly) hourlyEmployees.get(
+                EmployeeUtils.getEmployeeIndex(input, hourlyEmployees));
             
             LocalDate date = ConsoleUtils.readDateInput(input);
 
@@ -118,12 +116,10 @@ public class EmployeeMenu {
         }
     }
 
-    public static void addSaleReport(Scanner input, List<Employee> employeeList) {
-        Predicate<Employee> commissionedFilter = employee -> employee instanceof Commissioned;
-        List<Employee> commissionedEmployees = employeeList.stream().filter(commissionedFilter).collect(Collectors.toList());
-        
+    public static void addSaleReport(Scanner input, List<Employee> commissionedEmployees) {
         if (!commissionedEmployees.isEmpty()) {
-            Commissioned emp = (Commissioned) commissionedEmployees.get(getEmployeeIndex(input, commissionedEmployees));
+            Commissioned emp = (Commissioned) commissionedEmployees.get(
+                EmployeeUtils.getEmployeeIndex(input, commissionedEmployees));
             LocalDate date = ConsoleUtils.readDateInput(input);
             Double value = ConsoleUtils.readDoubleInput(input, "Enter sale value:");
             
@@ -135,12 +131,10 @@ public class EmployeeMenu {
         }
     }
 
-    public static void addServiceTax(Scanner input, List<Employee> employeeList) {
-        Predicate<Employee> unionFilter = employee -> employee.getUnionMember() != null && employee.getUnionMember().isActive();
-        List<Employee> unionEmployees = employeeList.stream().filter(unionFilter).collect(Collectors.toList());
-        
+    public static void addServiceTax(Scanner input, List<Employee> unionEmployees) {
         if (!unionEmployees.isEmpty()) {
-            Employee emp = unionEmployees.get(getEmployeeIndex(input, unionEmployees));
+            Employee emp = unionEmployees.get(
+                EmployeeUtils.getEmployeeIndex(input, unionEmployees));
             LocalDate date = ConsoleUtils.readDateInput(input);
             Double value = ConsoleUtils.readDoubleInput(input, "Enter tax value");
 
@@ -153,7 +147,7 @@ public class EmployeeMenu {
     }
 
     public static void editEmployee(Scanner input, List<Employee> employeeList) {
-        int idx = getEmployeeIndex(input, employeeList);
+        int idx = EmployeeUtils.getEmployeeIndex(input, employeeList);
         Employee emp = employeeList.get(idx);
 
         System.out.println("Select Attribute to edit");
@@ -246,18 +240,5 @@ public class EmployeeMenu {
             default:
                 break;
         }
-    }
-
-    private static int getEmployeeIndex(Scanner input, List<Employee> employeeList) {
-        int i = 1, index = 0, empListSize = employeeList.size();
-        System.out.println("\nChoose Employee [1-" + empListSize + "]:");
-        for (Employee e : employeeList) {
-            System.out.println("#" + i + " " + e.printBasicInfo());
-            i++;
-        }
-        while (index <= 0 || index > empListSize) {
-            index = ConsoleUtils.readIntInput(input, "");
-        }
-        return index - 1;
     }
 }

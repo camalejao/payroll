@@ -1,20 +1,16 @@
 package payroll.app;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import payroll.app.util.ConsoleUtils;
-import payroll.model.employee.Employee;
-import payroll.model.payments.PaymentSchedule;
+import payroll.model.Company;
 
 public class PayrollApp {
     public static void main(String[] args) {
         int option = 1;
         Scanner input = new Scanner(System.in);
 
-        List<Employee> employeeList = new ArrayList<Employee>();
-        PaymentSchedule paymentSchedules = new PaymentSchedule();
+        Company company = new Company();
 
         while (option != 0) {
             System.out.println("Payroll App Menu");
@@ -33,13 +29,13 @@ public class PayrollApp {
 
             switch (option) {
                 case 1:
-                    employeeList.add(EmployeeMenu.registerEmployee(input, paymentSchedules));
+                    company.addEmployee(EmployeeMenu.registerEmployee(input, company.getPaymentSchedules()));
                     ConsoleUtils.pressEnterToContinue(input);
                     break;
                 
                 case 2:
-                    if (!employeeList.isEmpty()) {
-                        EmployeeMenu.printEmployees(employeeList);
+                    if (!company.isEmployeeListEmpty()) {
+                        EmployeeMenu.printEmployees(company.getEmployees());
                     } else {
                         System.out.println("No employees registered to be listed");
                     }
@@ -47,8 +43,8 @@ public class PayrollApp {
                     break;
                     
                 case 3:
-                    if (!employeeList.isEmpty()) {
-                        EmployeeMenu.removeEmployee(input, employeeList);
+                    if (!company.isEmployeeListEmpty()) {
+                        company.removeEmployee(EmployeeMenu.removeEmployee(input, company.getEmployees()));
                     } else {
                         System.out.println("No employees registered to be removed");
                     }
@@ -56,8 +52,8 @@ public class PayrollApp {
                     break;
                 
                 case 4:
-                    if (!employeeList.isEmpty()) {
-                        EmployeeMenu.addTimecard(input, employeeList);
+                    if (!company.isEmployeeListEmpty()) {
+                        EmployeeMenu.addTimecard(input, company.getHourlyEmployees());
                     } else {
                         System.out.println("No employees registered to add it");
                     }
@@ -65,8 +61,8 @@ public class PayrollApp {
                     break;
                 
                 case 5:
-                    if (!employeeList.isEmpty()) {
-                        EmployeeMenu.addSaleReport(input, employeeList);
+                    if (!company.isEmployeeListEmpty()) {
+                        EmployeeMenu.addSaleReport(input, company.getCommissionedEmployees());
                     } else {
                         System.out.println("No employees registered to add it");
                     }
@@ -74,8 +70,8 @@ public class PayrollApp {
                     break;
                 
                 case 6:
-                    if (!employeeList.isEmpty()) {
-                        EmployeeMenu.addServiceTax(input, employeeList);
+                    if (!company.isEmployeeListEmpty()) {
+                        EmployeeMenu.addServiceTax(input, company.getUnionMemberEmployees());
                     } else {
                         System.out.println("No employees registered to add it");
                     }
@@ -83,20 +79,22 @@ public class PayrollApp {
                     break;
                 
                 case 7:
-                    if (!employeeList.isEmpty()) {
-                        EmployeeMenu.editEmployee(input, employeeList);
+                    if (!company.isEmployeeListEmpty()) {
+                        EmployeeMenu.editEmployee(input, company.getEmployees());
                     } else {
                         System.out.println("No employees registered to edit");
                     }
                     ConsoleUtils.pressEnterToContinue(input);
+                    break;
                 
                 case 8:
-                    if (!employeeList.isEmpty()) {
-                        PaymentsMenu.payroll(input, employeeList);
+                    if (!company.isEmployeeListEmpty()) {
+                        PaymentsMenu.payroll(input, company.getEmployees());
                     } else {
                         System.out.println("No employees registered to pay");
                     }
                     ConsoleUtils.pressEnterToContinue(input);
+                    break;
 
                 default:
                     break;
@@ -105,7 +103,5 @@ public class PayrollApp {
         }
         input.close();
         System.out.println("Bye!");
-    }
-
-    
+    }    
 }

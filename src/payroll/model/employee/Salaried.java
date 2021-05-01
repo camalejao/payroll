@@ -44,7 +44,7 @@ public class Salaried extends Employee {
 
     @Override
     Double calcPayment(LocalDate paymentDate) {
-        return this.salary;
+        return (double) this.salary / this.getPaymentInfo().getPaymentSchedule().getDividingFactor();
     }
 
 }

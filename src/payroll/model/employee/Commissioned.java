@@ -78,7 +78,7 @@ public class Commissioned extends Employee {
 
     @Override
     Double calcPayment(LocalDate paymentDate) {
-        Double payment = (double) this.getFixedSalary() / 2.0; // bi-weekly payment
+        Double payment = (double) this.getFixedSalary() / (double) this.getPaymentInfo().getPaymentSchedule().getDividingFactor();
         List<SaleReport> validSales;
         List<Paycheck> paychecks = this.getPaymentInfo().getPaychecks();
 

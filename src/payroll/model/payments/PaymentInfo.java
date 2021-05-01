@@ -1,5 +1,6 @@
 package payroll.model.payments;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +12,9 @@ public class PaymentInfo {
 
     private int account;
 
-    private String schedule;
-
     private PaymentMethod paymentMethod;
+
+    private PaymentSchedule paymentSchedule;
 
     private List<Paycheck> paychecks;
 
@@ -24,12 +25,12 @@ public class PaymentInfo {
 
 
     public PaymentInfo(int bank, int agency, int account,
-                        String schedule, PaymentMethod paymentMethod) {
+                    PaymentMethod paymentMethod, PaymentSchedule paymentSchedule) {
         this.bank = bank;
         this.agency = agency;
         this.account = account;
-        this.schedule = schedule;
         this.paymentMethod = paymentMethod;
+        this.paymentSchedule = paymentSchedule;
         this.paychecks = new ArrayList<Paycheck>();
     }
 
@@ -61,21 +62,21 @@ public class PaymentInfo {
     }
 
 
-    public String getSchedule() {
-        return this.schedule;
-    }
-
-    public void setSchedule(String schedule) {
-        this.schedule = schedule;
-    }
-
-
     public PaymentMethod getPaymentMethod() {
         return this.paymentMethod;
     }
 
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+
+    public PaymentSchedule getPaymentSchedule() {
+        return this.paymentSchedule;
+    }
+
+    public void setPaymentSchedule(PaymentSchedule paymentSchedule) {
+        this.paymentSchedule = paymentSchedule;
     }
 
 
@@ -94,7 +95,7 @@ public class PaymentInfo {
             " bank='" + getBank() + "'" +
             ", agency='" + getAgency() + "'" +
             ", account='" + getAccount() + "'" +
-            ", schedule='" + getSchedule() + "'" +
+            ", schedule='" + getPaymentSchedule().toString() + "'" +
             ", paymentMethod='" + getPaymentMethod().getMethodDescription() + "'" +
             "}";
     }
@@ -108,5 +109,10 @@ public class PaymentInfo {
         }
 
         return lastPayment;
+    }
+
+
+    public boolean isPaymentDay(int weekCounter, LocalDate currentDate) {
+        return this.paymentSchedule.checkIfDateIsInSchedule(weekCounter, currentDate);
     }
 }
