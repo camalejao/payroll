@@ -26,7 +26,13 @@ public class PaymentsMenu {
             i++;
         }
         int answer = input.nextInt();
-        PaymentMethod paymentMethod = PaymentMethod.values()[answer - 1];
+        PaymentMethod paymentMethod;
+        if (answer >= 1 && answer <= 3) {
+            paymentMethod = PaymentMethod.values()[answer - 1];
+        } else {
+            System.out.println("Invalid option. Default is Bank Deposit.");
+            paymentMethod = PaymentMethod.BANK_DEPOSIT;
+        }
         System.out.println();
 
         System.out.println("Enter the bank number:");
