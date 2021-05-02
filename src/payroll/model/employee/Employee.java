@@ -1,5 +1,6 @@
 package payroll.model.employee;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -11,7 +12,7 @@ import payroll.model.payments.PaymentInfo;
 import payroll.model.union.ServiceTax;
 import payroll.model.union.UnionMember;
 
-public abstract class Employee {
+public abstract class Employee implements Serializable {
 
     private UUID id;
 

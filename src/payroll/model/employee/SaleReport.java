@@ -1,8 +1,9 @@
 package payroll.model.employee;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class SaleReport {
+public class SaleReport implements Serializable {
 
     private LocalDate date;
 

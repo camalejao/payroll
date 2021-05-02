@@ -1,9 +1,10 @@
 package payroll.model.payments;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-public class PaymentsReport {
+public class PaymentsReport implements Serializable {
     
     private List<Paycheck> paychecks;
 

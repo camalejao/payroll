@@ -1,10 +1,11 @@
 package payroll.model.payments;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PaymentInfo {
+public class PaymentInfo implements Serializable {
     
     private int bank;
 

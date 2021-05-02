@@ -1,5 +1,6 @@
 package payroll.model;
 
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import payroll.model.payments.PaymentSchedule;
 import payroll.model.payments.PaymentsReport;
 import payroll.model.payments.Schedule;
 
-public class Company {
+public class Company implements Serializable {
     
     List<PaymentsReport> payments;
     

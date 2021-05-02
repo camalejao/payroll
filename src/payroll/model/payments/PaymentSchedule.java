@@ -1,5 +1,6 @@
 package payroll.model.payments;
 
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -8,7 +9,7 @@ import java.util.Locale;
 
 import payroll.app.util.DateUtils;
 
-public class PaymentSchedule {
+public class PaymentSchedule implements Serializable {
     
     private Schedule schedule;
 

@@ -1,8 +1,9 @@
 package payroll.model.union;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class ServiceTax {
+public class ServiceTax implements Serializable {
     
     private LocalDate date;
     

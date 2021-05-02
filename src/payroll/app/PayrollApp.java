@@ -1,5 +1,10 @@
 package payroll.app;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Base64;
 import java.util.Scanner;
 
 import payroll.app.util.ConsoleUtils;
@@ -11,6 +16,7 @@ public class PayrollApp {
         Scanner input = new Scanner(System.in);
 
         Company company = new Company();
+        String state = "";
 
         while (option != 0) {
             System.out.println("Payroll App Menu");
@@ -107,6 +113,17 @@ public class PayrollApp {
                     company.printPaymentReports();
                     ConsoleUtils.pressEnterToContinue(input);
                     break;
+                
+                case 11:
+                    state = saveState(company);
+                    ConsoleUtils.pressEnterToContinue(input);
+                    break;
+                
+                case 12:
+                    company = restoreState(state);
+                    ConsoleUtils.pressEnterToContinue(input);
+                    break;
+                
                 default:
                     break;
             }
@@ -114,5 +131,32 @@ public class PayrollApp {
         }
         input.close();
         System.out.println("Bye!");
-    }    
+    }
+
+    private static String saveState(Company company) {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(company);
+            oos.close();
+            return Base64.getEncoder().encodeToString(baos.toByteArray());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Could not save state.");
+            return "";
+        }
+    }
+
+    private static Company restoreState(String state) {
+        try {
+            byte[] data = Base64.getDecoder().decode(state);
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
+            return (Company) ois.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Could not restore state.");
+            return null;
+        }
+    }
+
 }
