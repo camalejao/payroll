@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Base64;
 import java.util.Scanner;
+import java.util.Stack;
 
 import payroll.app.util.ConsoleUtils;
 import payroll.model.Company;
@@ -16,7 +17,8 @@ public class PayrollApp {
         Scanner input = new Scanner(System.in);
 
         Company company = new Company();
-        String state = "";
+        Stack<String> undoStack = new Stack<>();
+        Stack<String> redoStack = new Stack<>();
 
         while (option != 0) {
             System.out.println("Payroll App Menu");
@@ -30,6 +32,8 @@ public class PayrollApp {
             System.out.println("[8] Run Payroll");
             System.out.println("[9] Add new Payment Schedule");
             System.out.println("[10] Print Payment Reports");
+            System.out.println("[11] Undo");
+            System.out.println("[12] Redo");
             System.out.println("[0] Exit");
 
             option = input.nextInt();
@@ -37,6 +41,7 @@ public class PayrollApp {
 
             switch (option) {
                 case 1:
+                    undoStack.push(saveState(company));
                     company.addEmployee(EmployeeMenu.registerEmployee(input, company.getPaymentSchedules()));
                     ConsoleUtils.pressEnterToContinue(input);
                     break;
@@ -52,6 +57,7 @@ public class PayrollApp {
                     
                 case 3:
                     if (!company.isEmployeeListEmpty()) {
+                        undoStack.push(saveState(company));
                         company.removeEmployee(EmployeeMenu.removeEmployee(input, company.getEmployees()));
                     } else {
                         System.out.println("No employees registered to be removed");
@@ -61,6 +67,7 @@ public class PayrollApp {
                 
                 case 4:
                     if (!company.isEmployeeListEmpty()) {
+                        undoStack.push(saveState(company));
                         EmployeeMenu.addTimecard(input, company.getHourlyEmployees());
                     } else {
                         System.out.println("No employees registered to add it");
@@ -70,6 +77,7 @@ public class PayrollApp {
                 
                 case 5:
                     if (!company.isEmployeeListEmpty()) {
+                        undoStack.push(saveState(company));
                         EmployeeMenu.addSaleReport(input, company.getCommissionedEmployees());
                     } else {
                         System.out.println("No employees registered to add it");
@@ -79,6 +87,7 @@ public class PayrollApp {
                 
                 case 6:
                     if (!company.isEmployeeListEmpty()) {
+                        undoStack.push(saveState(company));
                         EmployeeMenu.addServiceTax(input, company.getUnionMemberEmployees());
                     } else {
                         System.out.println("No employees registered to add it");
@@ -88,6 +97,7 @@ public class PayrollApp {
                 
                 case 7:
                     if (!company.isEmployeeListEmpty()) {
+                        undoStack.push(saveState(company));
                         EmployeeMenu.editEmployee(input, company.getEmployees(), company.getPaymentSchedules());
                     } else {
                         System.out.println("No employees registered to edit");
@@ -97,6 +107,7 @@ public class PayrollApp {
                 
                 case 8:
                     if (!company.isEmployeeListEmpty()) {
+                        undoStack.push(saveState(company));
                         company.addPaymentReports(PaymentsMenu.payroll(input, company.getEmployees()));
                     } else {
                         System.out.println("No employees registered to pay");
@@ -105,6 +116,7 @@ public class PayrollApp {
                     break;
                 
                 case 9:
+                    undoStack.push(saveState(company));
                     company.addPaymentSchedule(PaymentsMenu.registerNewPaymentSchedule(input));
                     ConsoleUtils.pressEnterToContinue(input);
                     break;
@@ -115,12 +127,24 @@ public class PayrollApp {
                     break;
                 
                 case 11:
-                    state = saveState(company);
+                    if (!undoStack.isEmpty()) {
+                        redoStack.push(saveState(company));
+                        String state = undoStack.pop();
+                        company = restoreState(state);
+                    } else {
+                        System.out.println("Nothing to Undo.");
+                    }
                     ConsoleUtils.pressEnterToContinue(input);
                     break;
                 
                 case 12:
-                    company = restoreState(state);
+                    if (!redoStack.isEmpty()) {
+                        undoStack.push(saveState(company));
+                        String state = redoStack.pop();
+                        company = restoreState(state);
+                    } else {
+                        System.out.println("Nothing to Redo.");
+                    }
                     ConsoleUtils.pressEnterToContinue(input);
                     break;
                 
